@@ -22,3 +22,5 @@ Thumbs.db
 
 # Ignore Vivado project
 project/
+
+*.f

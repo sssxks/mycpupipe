@@ -2,46 +2,70 @@
 `default_nettype none
 `include "definitions.sv"
 
-module regs(
-    input wire clk, rst, RegWrite,
-    input wire [4:0] Rs1_addr, Rs2_addr, Wt_addr,
-    input wire [31:0] Wt_data,
-    output wire [31:0] Rs1_data, Rs2_data
-);
-    reg [31:0] register [1:31]; // x1 - x31, x0 is hard wired to 0
-    
-    assign Rs1_data = (Rs1_addr == 0) ? 0 : register[Rs1_addr];
-    assign Rs2_data = (Rs2_addr == 0) ? 0 : register[Rs2_addr];
-
-    integer i;
-    always @(posedge clk or posedge rst) begin
-        if (rst == 1) begin
-            for (i = 1; i < 32; i = i + 1)
-                register[i] <= 0; // reset
-        end else if ((Wt_addr != 0) && (RegWrite == 1))
-            register[Wt_addr] <= Wt_data; // write
-    end
-endmodule
-
-module immgen(
-    input wire [2:0] ImmSel,
-    input wire [31:0] instr, // raw instruction
-    output reg [31:0] imm_out
-);
-    always @(*) begin
-        case(ImmSel)
-            `IMMGEN_I:imm_out = {{20{instr[31]}},instr[31:20]};
-            `IMMGEN_S:imm_out = {{20{instr[31]}}, instr[31:25], instr[11:7]};
-            `IMMGEN_SB:imm_out = {{19{instr[31]}}, instr[31], instr[7], instr[30:25], instr[11:8], 1'b0};
-            `IMMGEN_UJ:imm_out = {{11{instr[31]}}, instr[31], instr[19:12], instr[20], instr[30:21], 1'b0};
-            `IMMGEN_U:imm_out = {instr[31:12], 12'b0};
-            default: imm_out = 32'bx;
-        endcase
-    end
-endmodule
-
 module id_stage (
+    input  logic clk,
+    input  logic reset,
     
+    input logic        RegWriteIn,
+    input logic [4:0]  rd_addr_in,
+    input logic [31:0] rd_data,
+    input logic [31:0] instr,
+
+    output logic [31:0] rs1_data,
+    output logic [31:0] rs2_data,
+    output logic [31:0] rd_addr_out,
+    output logic [31:0] immediate,
+
+    output logic       MemRW,
+    output logic       RWType,
+
+    output logic       ALUSrcB,
+    output logic [2:0] ALUControl,
+    output logic       Branch,
+    output logic       InverseBranch,
+    output logic       Jump,
+    output logic [1:0] MemtoReg,
+    output logic       RegWriteOut
 );
-    
+
+    cpu_control_signals control_signals();
+
+    controller ctrl (
+        .rst(reset),
+        .opcode(instr[6:2]),
+        .fun3(instr[14:12]),
+        .fun7(instr[30]),
+        .instruction(instr),
+        .ext_int(1'b0),
+        .signals_if(control_signals.control_unit),
+        .MemRW(MemRW),
+        .RWType(RWType)
+    );
+
+    immgen imm_gen (
+        .ImmSel(control_signals.ImmSel),
+        .instr(instr),
+        .imm_out(immediate)
+    );
+
+    regs register_file (
+        .clk(clk),
+        .rst(reset),
+        .reg_write(RegWriteIn),
+        .rs1_addr(instr[19:15]),
+        .rs2_addr(instr[24:20]),
+        .wt_addr(rd_addr_in),
+        .wt_data(rd_data),
+        .rs1_data(rs1_data),
+        .rs2_data(rs2_data)
+    );
+
+    assign ALUSrcB = control_signals.ALUSrcB;
+    assign ALUControl = control_signals.ALUControl;
+    assign Branch = control_signals.Branch;
+    assign InverseBranch = control_signals.InverseBranch;
+    assign Jump = control_signals.Jump;
+    assign MemtoReg = control_signals.MemtoReg;
+    assign RegWriteOut = control_signals.RegWrite;
+
 endmodule
