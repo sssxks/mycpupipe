@@ -1,5 +1,4 @@
 `include "definitions.sv"
-`include "cpu_control_signals.sv"
 
 module controller(
     input wire rst,
@@ -10,296 +9,211 @@ module controller(
 
     input wire [31:0] instruction,
 
-    input wire ext_int,
+    id_control_if.provider id_ctrl,
+    ex_control_if.provider ex_ctrl,
+    mem_control_if.provider mem_ctrl,
+    wb_control_if.provider wb_ctrl,
 
-    // signals to datapath
-    cpu_control_signals.control_unit signals_if,
-    
     output reg MemRW,
     output reg [2:0] RWType
-    
 );
-    reg [1:0] int_cause;    
-
-    assign signals_if.IntCause = ext_int ? 2'b11 : int_cause;
-
     always @(*) begin
-        if (rst) begin
-            int_cause = 2'b0;
-            signals_if.MRet = 1'b0;
-        end else begin
-            case (opcode)
-            `OPCODE_R_TYPE: begin
-                signals_if.ImmSel = 3'bxxx; // doesn't matter
-                signals_if.ALUSrcB = 1'b0; // rs2
-                signals_if.MemtoReg = 2'd0; // alu result
-                
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b0;
-                // the following doesn't matter
-                signals_if.InverseBranch = 1'bx;
-                signals_if.PCOffset = 1'bx; 
+        case (opcode)
+        `OPCODE_R_TYPE: begin
+            id_ctrl.ImmSel = 3'bxxx; // doesn't matter
+            ex_ctrl.ALUSrcB = 1'b0; // rs2
+            wb_ctrl.MemtoReg = 2'd0; // alu result
+            
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'bx; // doesn't matter
 
-                signals_if.RegWrite = 1'b1;
+            wb_ctrl.RegWrite = 1'b1;
 
-                MemRW = 1'b0;
-                RWType = 3'b000; // doesn't matter
+            MemRW = 1'b0;
+            RWType = 3'b000; // doesn't matter
 
-                int_cause = 2'b0; // doesn't cause an interruption
-                signals_if.MRet = 1'b0;
-
-                signals_if.ALUControl = {fun7, fun3};
-            end
-            `OPCODE_IMMEDIATE_CALCULATION: begin
-                signals_if.ImmSel = `IMMGEN_I;
-                signals_if.ALUSrcB = 1'b1;
-                signals_if.MemtoReg = 2'd0;
-
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b0;
-                // the following doesn't matter
-                signals_if.InverseBranch = 1'bx;
-                signals_if.PCOffset = 1'bx; 
-
-                signals_if.RegWrite = 1'b1;
-
-                MemRW = 1'b0;
-                RWType = 3'b000; // doesn't matter
-
-                int_cause = 2'b0;
-                signals_if.MRet = 1'b0;
-
-                // I type format doesn't have fun7
-                // but shift right logical & shift right arithmatic 
-                // has additional Fun6 as a special case of I type format
-                signals_if.ALUControl = {fun3 == `FUN3_SR ? fun7 : 1'b0, fun3};
-            end
-            `OPCODE_LOAD: begin
-                signals_if.ImmSel = `IMMGEN_I;
-                signals_if.ALUSrcB = 1'b1;
-                signals_if.MemtoReg = 2'd1;
-
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b0;
-                // the following doesn't matter
-                signals_if.InverseBranch = 1'bx;
-                signals_if.PCOffset = 1'bx; 
-                
-                signals_if.RegWrite = 1'b1;
-
-                MemRW = 1'b0;
-                RWType = fun3;
-
-                int_cause = 2'b0;
-                signals_if.MRet = 1'b0;
-
-                signals_if.ALUControl = `ALU_ADD;
-            end
-            `OPCODE_JALR: begin
-                signals_if.ImmSel = `IMMGEN_I; // i type
-                signals_if.ALUSrcB = 1'b1;
-                signals_if.MemtoReg = 2'd2;
-
-                signals_if.Jump = 1'b1;
-                signals_if.Branch = 1'b0;
-                signals_if.InverseBranch = 1'bx;
-                signals_if.PCOffset = 1'b1;
-                
-                signals_if.RegWrite = 1'b1;
-
-                MemRW = 1'b0;
-                RWType = 3'b000; // doesn't matter
-
-                int_cause = 2'b0;
-                signals_if.MRet = 1'b0;
-
-                signals_if.ALUControl = `ALU_ADD; // ADD
-            end
-            `OPCODE_S_TYPE: begin
-                signals_if.ImmSel = `IMMGEN_S;
-                signals_if.ALUSrcB = 1'b1;
-                signals_if.MemtoReg = 2'd0;
-                
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b0;
-                // the following doesn't matter
-                signals_if.InverseBranch = 1'bx;
-                signals_if.PCOffset = 1'bx; 
-                
-                signals_if.RegWrite = 1'b0;
-
-                MemRW = 1'b1;
-                RWType = fun3;
-
-                int_cause = 2'b0;
-                signals_if.MRet = 1'b0;
-
-                signals_if.ALUControl = `ALU_ADD; // ADD
-            end
-            `OPCODE_SB_TYPE: begin // SB-type branch
-                signals_if.ImmSel = `IMMGEN_SB;
-                signals_if.ALUSrcB = 1'b0;
-                signals_if.MemtoReg = 2'd0; // ALU result
-                
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b1;
-                signals_if.InverseBranch = fun3[0]; // NE, GE, GEU
-                signals_if.PCOffset = 1'b0; 
-                
-                signals_if.RegWrite = 1'b0;
-
-                MemRW = 1'b0;
-                RWType = 3'b000; // doesn't matter
-
-                signals_if.MRet = 1'b0;
-
-                case (fun3)
-                    `FUN3_BEQ: begin
-                        signals_if.ALUControl = `ALU_EQ;
-                        int_cause = 2'b0;
-                    end
-                    `FUN3_BNE: begin
-                        signals_if.ALUControl = `ALU_NE;
-                        int_cause = 2'b0;
-                    end
-                    `FUN3_BLT: begin
-                        signals_if.ALUControl = `ALU_LT;
-                        int_cause = 2'b0;
-                    end
-                    `FUN3_BGE: begin
-                        signals_if.ALUControl = `ALU_GE;
-                        int_cause = 2'b1; // TODO change this back later
-                    end
-                    `FUN3_BLTU: begin
-                        signals_if.ALUControl = `ALU_LTU;
-                        int_cause = 2'b0;
-                    end
-                    `FUN3_BGEU: begin
-                        signals_if.ALUControl = `ALU_GEU;
-                        int_cause = 2'b0;
-                    end
-                    default: begin
-                        signals_if.ALUControl = 4'bxxxx; // Undefined
-                        int_cause = 2'b1;
-                    end
-                endcase
-            end
-            `OPCODE_UJ_TYPE: begin // UJ-type JAL
-                signals_if.ImmSel = `IMMGEN_UJ;
-                signals_if.ALUSrcB = 1'bx; // doesn't matter
-                signals_if.MemtoReg = 2'd2; // PC + 4
-
-                signals_if.Jump = 1'b1;
-                signals_if.Branch = 1'b0;
-                signals_if.InverseBranch = 1'bx; // doesn't matter
-                signals_if.PCOffset = 1'b0; 
-                
-                signals_if.RegWrite = 1'b1;
-
-                MemRW = 1'b0;
-                RWType = 3'b000; // doesn't matter
-
-                int_cause = 2'b0;
-                signals_if.MRet = 1'b0;
-
-                // this instruction doesn't use ALU
-                signals_if.ALUControl = 4'bxxxx; // Undefined
-            end
-            `OPCODE_LUI: begin // LUI
-                signals_if.ImmSel = `IMMGEN_U;
-                signals_if.ALUSrcB = 1'bx;
-                signals_if.MemtoReg = 2'd3;
-
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b0;
-                signals_if.InverseBranch = 1'bx; // doesn't matter
-                signals_if.PCOffset = 1'b0; 
-
-                signals_if.RegWrite = 1'b1;
-
-                MemRW = 1'b0;
-                RWType = 3'b000; // doesn't matter
-
-                int_cause = 2'b0;
-                signals_if.MRet = 1'b0;
-
-                // this instruction doesn't use ALU
-                signals_if.ALUControl = 4'bxxxx; // Undefined
-            end
-            `OPCODE_AUIPC: begin // AUIPC
-                signals_if.ImmSel = `IMMGEN_U;
-                signals_if.ALUSrcB = 1'bx;
-                signals_if.MemtoReg = 2'd2;
-
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b0;
-                signals_if.InverseBranch = 1'bx; // doesn't matter
-                signals_if.PCOffset = 1'b0;
-                
-                signals_if.RegWrite = 1'b1;
-
-                MemRW = 1'b0;
-                RWType = 3'b000; // doesn't matter
-
-                int_cause = 2'b0;
-                signals_if.MRet = 1'b0;
-
-                // this instruction doesn't use ALU
-                signals_if.ALUControl = 4'bxxxx; // Undefined
-            end
-            `OPCODE_SYSTEM: begin
-                signals_if.ImmSel = 3'bxxx;
-                signals_if.ALUSrcB = 1'bx;
-                signals_if.MemtoReg = 2'bxx;
-
-                signals_if.Jump = 1'b0;
-                signals_if.Branch = 1'b0;
-                signals_if.InverseBranch = 1'bx;
-                signals_if.PCOffset = 1'bx;
-
-                signals_if.RegWrite = 1'b0;
-
-                MemRW = 1'b0;
-                RWType = 3'bxxx;
-
-                signals_if.ALUControl = 4'bxxxx;
-                case (instruction[31:20])
-                    `FUN12_ECALL: begin
-                        int_cause = 2'd2;
-                        signals_if.MRet = 1'b0;
-                    end
-                    `FUN12_MRET: begin
-                        int_cause = 2'd0;
-                        signals_if.MRet = 1'b1;
-                    end
-                    default: begin
-                        int_cause = 2'd1;
-                        signals_if.MRet = 1'b0;
-                    end
-                endcase
-            end
-            default: begin // should ignore, but for now, just set to undefined
-                signals_if.ImmSel = 3'bxxx;
-                signals_if.ALUSrcB = 1'bx;
-                signals_if.MemtoReg = 2'bxx;
-
-                signals_if.Jump = 1'bx;
-                signals_if.Branch = 1'bx;
-                signals_if.InverseBranch = 1'bx;
-                signals_if.PCOffset = 1'bx; 
-
-                signals_if.RegWrite = 1'b0;
-
-                MemRW = 1'bx;
-                RWType = 3'bxxx;
-
-                int_cause = 2'd1;
-                signals_if.MRet = 1'b0;
-
-                signals_if.ALUControl = 4'bxxxx;
-            end
-        endcase
-
+            ex_ctrl.ALUControl = {fun7, fun3};
         end
+        `OPCODE_IMMEDIATE_CALCULATION: begin
+            id_ctrl.ImmSel = `IMMGEN_I;
+            ex_ctrl.ALUSrcB = 1'b1;
+            wb_ctrl.MemtoReg = 2'd0;
+
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'bx; // doesn't matter
+
+            wb_ctrl.RegWrite = 1'b1;
+
+            MemRW = 1'b0;
+            RWType = 3'b000; // doesn't matter
+
+            ex_ctrl.ALUControl = {fun3 == `FUN3_SR ? fun7 : 1'b0, fun3};
+        end
+        `OPCODE_LOAD: begin
+            id_ctrl.ImmSel = `IMMGEN_I;
+            ex_ctrl.ALUSrcB = 1'b1;
+            wb_ctrl.MemtoReg = 2'd1;
+
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'bx; // doesn't matter
+
+            wb_ctrl.RegWrite = 1'b1;
+
+            MemRW = 1'b0;
+            RWType = fun3;
+
+            ex_ctrl.ALUControl = `ALU_ADD;
+        end
+        `OPCODE_JALR: begin
+            id_ctrl.ImmSel = `IMMGEN_I; // i type
+            ex_ctrl.ALUSrcB = 1'b1;
+            wb_ctrl.MemtoReg = 2'd2;
+
+            mem_ctrl.Jump = 1'b1;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'b1;
+
+            wb_ctrl.RegWrite = 1'b1;
+
+            MemRW = 1'b0;
+            RWType = 3'b000; // doesn't matter
+
+            ex_ctrl.ALUControl = `ALU_ADD; // ADD
+        end
+        `OPCODE_S_TYPE: begin
+            id_ctrl.ImmSel = `IMMGEN_S;
+            ex_ctrl.ALUSrcB = 1'b1;
+            wb_ctrl.MemtoReg = 2'd0;
+
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'bx; // doesn't matter
+
+            wb_ctrl.RegWrite = 1'b0;
+
+            MemRW = 1'b1;
+            RWType = fun3;
+
+            ex_ctrl.ALUControl = `ALU_ADD; // ADD
+        end
+        `OPCODE_SB_TYPE: begin // SB-type branch
+            id_ctrl.ImmSel = `IMMGEN_SB;
+            ex_ctrl.ALUSrcB = 1'b0;
+            wb_ctrl.MemtoReg = 2'd0; // ALU result
+
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b1;
+            mem_ctrl.InverseBranch = fun3[0]; // NE, GE, GEU
+            ex_ctrl.PCOffset = 1'b0;
+
+            wb_ctrl.RegWrite = 1'b0;
+
+            MemRW = 1'b0;
+            RWType = 3'b000; // doesn't matter
+
+            case (fun3)
+                `FUN3_BEQ: ex_ctrl.ALUControl = `ALU_EQ;
+                `FUN3_BNE: ex_ctrl.ALUControl = `ALU_NE;
+                `FUN3_BLT: ex_ctrl.ALUControl = `ALU_LT;
+                `FUN3_BGE: ex_ctrl.ALUControl = `ALU_GE;
+                `FUN3_BLTU: ex_ctrl.ALUControl = `ALU_LTU;
+                `FUN3_BGEU: ex_ctrl.ALUControl = `ALU_GEU;
+                default: ex_ctrl.ALUControl = 4'bxxxx; // Undefined
+            endcase
+        end
+        `OPCODE_UJ_TYPE: begin // UJ-type JAL
+            id_ctrl.ImmSel = `IMMGEN_UJ;
+            ex_ctrl.ALUSrcB = 1'bx; // doesn't matter
+            wb_ctrl.MemtoReg = 2'd2; // PC + 4
+
+            mem_ctrl.Jump = 1'b1;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'b0;
+
+            wb_ctrl.RegWrite = 1'b1;
+
+            MemRW = 1'b0;
+            RWType = 3'b000; // doesn't matter
+
+            ex_ctrl.ALUControl = 4'bxxxx; // Undefined
+        end
+        `OPCODE_LUI: begin // LUI
+            id_ctrl.ImmSel = `IMMGEN_U;
+            ex_ctrl.ALUSrcB = 1'bx;
+            wb_ctrl.MemtoReg = 2'd3;
+
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'b0;
+
+            wb_ctrl.RegWrite = 1'b1;
+
+            MemRW = 1'b0;
+            RWType = 3'b000; // doesn't matter
+
+            ex_ctrl.ALUControl = 4'bxxxx; // Undefined
+        end
+        `OPCODE_AUIPC: begin // AUIPC
+            id_ctrl.ImmSel = `IMMGEN_U;
+            ex_ctrl.ALUSrcB = 1'bx;
+            wb_ctrl.MemtoReg = 2'd2;
+
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.PCOffset = 1'b0;
+
+            wb_ctrl.RegWrite = 1'b1;
+
+            MemRW = 1'b0;
+            RWType = 3'b000; // doesn't matter
+
+            ex_ctrl.ALUControl = 4'bxxxx; // Undefined
+        end
+        `OPCODE_SYSTEM: begin
+            id_ctrl.ImmSel = 3'bxxx;
+            ex_ctrl.ALUSrcB = 1'bx;
+            wb_ctrl.MemtoReg = 2'bxx;
+
+            mem_ctrl.Jump = 1'b0;
+            mem_ctrl.Branch = 1'b0;
+            mem_ctrl.InverseBranch = 1'bx;
+            ex_ctrl.PCOffset = 1'bx;
+
+            wb_ctrl.RegWrite = 1'b0;
+
+            MemRW = 1'b0;
+            RWType = 3'bxxx;
+
+            ex_ctrl.ALUControl = 4'bxxxx;
+        end
+        default: begin // should ignore, but for now, just set to undefined
+            id_ctrl.ImmSel = 3'bxxx;
+            ex_ctrl.ALUSrcB = 1'bx;
+            wb_ctrl.MemtoReg = 2'bxx;
+
+            mem_ctrl.Jump = 1'bx;
+            mem_ctrl.Branch = 1'bx;
+            mem_ctrl.InverseBranch = 1'bx;
+            ex_ctrl.PCOffset = 1'bx;
+
+            wb_ctrl.RegWrite = 1'b0;
+
+            MemRW = 1'bx;
+            RWType = 3'bxxx;
+
+            ex_ctrl.ALUControl = 4'bxxxx;
+        end
+    endcase
     end
 endmodule

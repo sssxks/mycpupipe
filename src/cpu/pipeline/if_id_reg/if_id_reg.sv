@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module if_id_reg (
     input logic clk,
     input logic reset,
@@ -6,7 +8,6 @@ module if_id_reg (
     output logic [31:0] id_pc,
     output logic [31:0] id_instruction
 );
-
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             id_pc <= 32'b0;
@@ -16,5 +17,4 @@ module if_id_reg (
             id_instruction <= if_instruction;
         end
     end
-
 endmodule

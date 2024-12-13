@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module pc #(parameter WIDTH = 32) (
     input  logic             clk,
     input  logic             reset,

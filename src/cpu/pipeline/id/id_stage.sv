@@ -16,19 +16,23 @@ module id_stage (
     output logic [31:0] rd_addr_out,
     output logic [31:0] immediate,
 
-    output logic       MemRW,
-    output logic       RWType,
+    ex_control_if.provider ex_ctrl,
+    mem_control_if.provider mem_ctrl,
+    wb_control_if.provider wb_ctrl
+    // output logic       MemRW,
+    // output logic       RWType,
 
-    output logic       ALUSrcB,
-    output logic [2:0] ALUControl,
-    output logic       Branch,
-    output logic       InverseBranch,
-    output logic       Jump,
-    output logic [1:0] MemtoReg,
-    output logic       RegWriteOut
+    // output logic       ALUSrcB,
+    // output logic [3:0] ALUControl,
+    // output logic       Branch,
+    // output logic       InverseBranch,
+    // output logic       Jump,
+    // output logic [1:0] MemtoReg,
+    // output logic       RegWriteOut
+
 );
-
-    cpu_control_signals control_signals();
+    // 自己控自己
+    id_control_if id_ctrl();
 
     controller ctrl (
         .rst(reset),
@@ -37,13 +41,17 @@ module id_stage (
         .fun7(instr[30]),
         .instruction(instr),
         .ext_int(1'b0),
-        .signals_if(control_signals.control_unit),
         .MemRW(MemRW),
-        .RWType(RWType)
+        .RWType(RWType),
+        .id_ctrl(id_ctrl),
+        .ex_ctrl(ex_ctrl),
+        .mem_ctrl(mem_ctrl),
+        .wb_ctrl(wb_ctrl)
+
     );
 
     immgen imm_gen (
-        .ImmSel(control_signals.ImmSel),
+        .ImmSel(id_ctrl.ImmSel),
         .instr(instr),
         .imm_out(immediate)
     );
@@ -60,12 +68,12 @@ module id_stage (
         .rs2_data(rs2_data)
     );
 
-    assign ALUSrcB = control_signals.ALUSrcB;
-    assign ALUControl = control_signals.ALUControl;
-    assign Branch = control_signals.Branch;
-    assign InverseBranch = control_signals.InverseBranch;
-    assign Jump = control_signals.Jump;
-    assign MemtoReg = control_signals.MemtoReg;
-    assign RegWriteOut = control_signals.RegWrite;
+    // assign ALUSrcB = control_signals.ALUSrcB;
+    // assign ALUControl = control_signals.ALUControl;
+    // assign Branch = control_signals.Branch;
+    // assign InverseBranch = control_signals.InverseBranch;
+    // assign Jump = control_signals.Jump;
+    // assign MemtoReg = control_signals.MemtoReg;
+    // assign RegWriteOut = control_signals.RegWrite;
 
 endmodule

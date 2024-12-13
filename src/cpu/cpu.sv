@@ -1,15 +1,27 @@
 `timescale 1ns/1ps
 
 module cpu (
-    
+    input logic clk,
+    input logic reset
 );
+    logic [31:0] pc_in;
+    logic [31:0] pc_out;
+
+    logic PCSrc;
+
     if_stage if_stage_instance (
         .clk(clk),
         .reset(reset),
-        .enable(enable),
+        .enable(1'b1),
+        
         .pc_in(pc_in),
         .PCSrc(PCSrc),
         .pc_out(pc_out)
+    );
+
+    if_id_reg if_id_reg_instance (
+        .clk(clk),
+        .reset(reset),
     );
 
     id_stage id_stage_instance (
