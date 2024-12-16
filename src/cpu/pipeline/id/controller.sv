@@ -1,4 +1,5 @@
 `include "definitions.sv"
+`include "control_signals.sv"
 
 module controller(
     input wire rst,
@@ -7,15 +8,10 @@ module controller(
     input wire [2:0] fun3, // instruction[12:14]
     input wire fun7, // instruction[30]
 
-    input wire [31:0] instruction,
-
-    id_control_if.provider id_ctrl,
-    ex_control_if.provider ex_ctrl,
-    mem_control_if.provider mem_ctrl,
-    wb_control_if.provider wb_ctrl,
-
-    output reg MemRW,
-    output reg [2:0] RWType
+    output id_control_t id_ctrl,
+    output ex_control_t ex_ctrl,
+    output mem_control_t mem_ctrl,
+    output wb_control_t wb_ctrl
 );
     always @(*) begin
         case (opcode)
@@ -31,8 +27,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b1;
 
-            MemRW = 1'b0;
-            RWType = 3'b000; // doesn't matter
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = 3'b000; // doesn't matter
 
             ex_ctrl.ALUControl = {fun7, fun3};
         end
@@ -48,8 +44,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b1;
 
-            MemRW = 1'b0;
-            RWType = 3'b000; // doesn't matter
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = 3'b000; // doesn't matter
 
             ex_ctrl.ALUControl = {fun3 == `FUN3_SR ? fun7 : 1'b0, fun3};
         end
@@ -65,8 +61,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b1;
 
-            MemRW = 1'b0;
-            RWType = fun3;
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = fun3;
 
             ex_ctrl.ALUControl = `ALU_ADD;
         end
@@ -82,8 +78,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b1;
 
-            MemRW = 1'b0;
-            RWType = 3'b000; // doesn't matter
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = 3'b000; // doesn't matter
 
             ex_ctrl.ALUControl = `ALU_ADD; // ADD
         end
@@ -99,8 +95,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b0;
 
-            MemRW = 1'b1;
-            RWType = fun3;
+            mem_ctrl.MemRW = 1'b1;
+            mem_ctrl.RWType = fun3;
 
             ex_ctrl.ALUControl = `ALU_ADD; // ADD
         end
@@ -116,8 +112,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b0;
 
-            MemRW = 1'b0;
-            RWType = 3'b000; // doesn't matter
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = 3'b000; // doesn't matter
 
             case (fun3)
                 `FUN3_BEQ: ex_ctrl.ALUControl = `ALU_EQ;
@@ -141,8 +137,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b1;
 
-            MemRW = 1'b0;
-            RWType = 3'b000; // doesn't matter
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = 3'b000; // doesn't matter
 
             ex_ctrl.ALUControl = 4'bxxxx; // Undefined
         end
@@ -158,8 +154,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b1;
 
-            MemRW = 1'b0;
-            RWType = 3'b000; // doesn't matter
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = 3'b000; // doesn't matter
 
             ex_ctrl.ALUControl = 4'bxxxx; // Undefined
         end
@@ -175,27 +171,10 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b1;
 
-            MemRW = 1'b0;
-            RWType = 3'b000; // doesn't matter
+            mem_ctrl.MemRW = 1'b0;
+            mem_ctrl.RWType = 3'b000; // doesn't matter
 
             ex_ctrl.ALUControl = 4'bxxxx; // Undefined
-        end
-        `OPCODE_SYSTEM: begin
-            id_ctrl.ImmSel = 3'bxxx;
-            ex_ctrl.ALUSrcB = 1'bx;
-            wb_ctrl.MemtoReg = 2'bxx;
-
-            mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx;
-            ex_ctrl.PCOffset = 1'bx;
-
-            wb_ctrl.RegWrite = 1'b0;
-
-            MemRW = 1'b0;
-            RWType = 3'bxxx;
-
-            ex_ctrl.ALUControl = 4'bxxxx;
         end
         default: begin // should ignore, but for now, just set to undefined
             id_ctrl.ImmSel = 3'bxxx;
@@ -209,8 +188,8 @@ module controller(
 
             wb_ctrl.RegWrite = 1'b0;
 
-            MemRW = 1'bx;
-            RWType = 3'bxxx;
+            mem_ctrl.MemRW = 1'bx;
+            mem_ctrl.RWType = 3'bxxx;
 
             ex_ctrl.ALUControl = 4'bxxxx;
         end

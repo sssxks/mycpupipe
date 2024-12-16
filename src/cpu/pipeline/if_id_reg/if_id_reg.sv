@@ -3,8 +3,10 @@
 module if_id_reg (
     input logic clk,
     input logic reset,
+    
     input logic [31:0] if_pc,
     input logic [31:0] if_instruction,
+
     output logic [31:0] id_pc,
     output logic [31:0] id_instruction
 );

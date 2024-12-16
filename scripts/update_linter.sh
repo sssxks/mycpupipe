@@ -15,4 +15,4 @@ fi
 # Generate the verilator.f file and output results to stdout
 find "$SRC_DIR" -type d -exec echo "-y $(realpath {})" \; | tee verilator.f
 find "$SRC_DIR" -type f -name "*.sv" -exec echo "$(realpath {})" \; | tee -a verilator.f
-echo "--top-module cpu" | tee -a verilator.f
+echo "--top-module soc_simulation_tb" | tee -a verilator.f

@@ -1,8 +1,9 @@
 `timescale 1ns/1ps
 
 module pc #(parameter WIDTH = 32) (
-    input  logic             clk,
-    input  logic             reset,
+    input  logic clk,
+    input  logic reset,
+
     input  logic [WIDTH-1:0] pc_in,
     output logic [WIDTH-1:0] pc_out
 );

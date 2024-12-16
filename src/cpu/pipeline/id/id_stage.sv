@@ -1,10 +1,10 @@
 `timescale 1ns / 1ps
 `default_nettype none
-`include "definitions.sv"
+`include "control_signals.sv"
 
 module id_stage (
-    input  logic clk,
-    input  logic reset,
+    input logic clk,
+    input logic reset,
     
     input logic        RegWriteIn,
     input logic [4:0]  rd_addr_in,
@@ -16,11 +16,9 @@ module id_stage (
     output logic [31:0] rd_addr_out,
     output logic [31:0] immediate,
 
-    ex_control_if.provider ex_ctrl,
-    mem_control_if.provider mem_ctrl,
-    wb_control_if.provider wb_ctrl
-    // output logic       MemRW,
-    // output logic       RWType,
+    output ex_control_t ex_ctrl,
+    output mem_control_t mem_ctrl,
+    output wb_control_t wb_ctrl
 
     // output logic       ALUSrcB,
     // output logic [3:0] ALUControl,
@@ -31,23 +29,19 @@ module id_stage (
     // output logic       RegWriteOut
 
 );
-    // 自己控自己
-    id_control_if id_ctrl();
+    id_control_t id_ctrl;
 
     controller ctrl (
         .rst(reset),
+
         .opcode(instr[6:2]),
         .fun3(instr[14:12]),
         .fun7(instr[30]),
-        .instruction(instr),
-        .ext_int(1'b0),
-        .MemRW(MemRW),
-        .RWType(RWType),
+
         .id_ctrl(id_ctrl),
         .ex_ctrl(ex_ctrl),
         .mem_ctrl(mem_ctrl),
         .wb_ctrl(wb_ctrl)
-
     );
 
     immgen imm_gen (
@@ -67,13 +61,4 @@ module id_stage (
         .rs1_data(rs1_data),
         .rs2_data(rs2_data)
     );
-
-    // assign ALUSrcB = control_signals.ALUSrcB;
-    // assign ALUControl = control_signals.ALUControl;
-    // assign Branch = control_signals.Branch;
-    // assign InverseBranch = control_signals.InverseBranch;
-    // assign Jump = control_signals.Jump;
-    // assign MemtoReg = control_signals.MemtoReg;
-    // assign RegWriteOut = control_signals.RegWrite;
-
 endmodule
