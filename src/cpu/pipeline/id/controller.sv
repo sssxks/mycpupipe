@@ -2,8 +2,7 @@
 `include "definitions.sv"
 `include "control_signals.sv"
 
-module controller(
-    input wire rst,
+module controller(    
     // from instruction
     input wire [4:0] opcode, // instruction[6:2]
     input wire [2:0] fun3, // instruction[12:14]

@@ -1,4 +1,5 @@
 `timescale 1ns/1ps
+`default_nettype none
 
 module pc #(parameter WIDTH = 32) (
     input  logic clk,

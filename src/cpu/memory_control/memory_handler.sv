@@ -12,34 +12,50 @@ module memory_handler (
     always @(*) begin
         if (cpu.MemRW == 1'b0) begin // read
             case (cpu.RWType)
-                `BYTE: begin
-                    case (where)
-                        2'b00: cpu.data_in = {{24{mem.data_in[7]}}, mem.data_in[7:0]};
-                        2'b01: cpu.data_in = {{24{mem.data_in[15]}}, mem.data_in[15:8]};
-                        2'b10: cpu.data_in = {{24{mem.data_in[23]}}, mem.data_in[23:16]};
-                        2'b11: cpu.data_in = {{24{mem.data_in[31]}}, mem.data_in[31:24]};
-                    endcase
-                end
-                `BYTE_U: begin
-                    case (where)
-                        2'b00: cpu.data_in = {24'b0, mem.data_in[7:0]};
-                        2'b01: cpu.data_in = {24'b0, mem.data_in[15:8]};
-                        2'b10: cpu.data_in = {24'b0, mem.data_in[23:16]};
-                        2'b11: cpu.data_in = {24'b0, mem.data_in[31:24]};
-                    endcase
-                end
-                `HALF: begin
-                    case (where[1])
-                        1'b0: cpu.data_in = {{16{mem.data_in[15]}}, mem.data_in[15:0]};
-                        1'b1: cpu.data_in = {{16{mem.data_in[31]}}, mem.data_in[31:16]};
-                    endcase
-                end
-                `HALF_U: begin
-                    case (where[1])
-                        1'b0: cpu.data_in = {16'b0, mem.data_in[15:0]};
-                        1'b1: cpu.data_in = {16'b0, mem.data_in[31:16]};
-                    endcase
-                end
+                // `BYTE: begin
+                //     case (where)
+                //         2'b00: cpu.data_in = {{24{mem.data_in[7]}}, mem.data_in[7:0]};
+                //         2'b01: cpu.data_in = {{24{mem.data_in[15]}}, mem.data_in[15:8]};
+                //         2'b10: cpu.data_in = {{24{mem.data_in[23]}}, mem.data_in[23:16]};
+                //         2'b11: cpu.data_in = {{24{mem.data_in[31]}}, mem.data_in[31:24]};
+                //     endcase
+                // end
+                // `BYTE_U: begin
+                //     case (where)
+                //         2'b00: cpu.data_in = {24'b0, mem.data_in[7:0]};
+                //         2'b01: cpu.data_in = {24'b0, mem.data_in[15:8]};
+                //         2'b10: cpu.data_in = {24'b0, mem.data_in[23:16]};
+                //         2'b11: cpu.data_in = {24'b0, mem.data_in[31:24]};
+                //     endcase
+                // end
+                // `HALF: begin
+                //     case (where[1])
+                //         1'b0: cpu.data_in = {{16{mem.data_in[15]}}, mem.data_in[15:0]};
+                //         1'b1: cpu.data_in = {{16{mem.data_in[31]}}, mem.data_in[31:16]};
+                //     endcase
+                // end
+                // `HALF_U: begin
+                //     case (where[1])
+                //         1'b0: cpu.data_in = {16'b0, mem.data_in[15:0]};
+                //         1'b1: cpu.data_in = {16'b0, mem.data_in[31:16]};
+                //     endcase
+                // end
+                `BYTE: cpu.data_in = {
+                    {24{mem.data_in[{where, 3'b0}]}},
+                    mem.data_in[{where, 3'b0} +: 8]
+                };
+                `BYTE_U: cpu.data_in = {
+                    24'b0,
+                    mem.data_in[{where, 3'b0} +: 8]
+                };
+                `HALF: cpu.data_in = {
+                    {16{mem.data_in[{where[1], 4'b0}]}},
+                    mem.data_in[{where[1], 4'b0} +: 16]
+                };
+                `HALF_U: cpu.data_in = {
+                    16'b0, 
+                    mem.data_in[{where[1], 4'b0} +: 16]
+                };
                 `WORD: cpu.data_in = mem.data_in;
                 default: cpu.data_in = 32'bx;
             endcase

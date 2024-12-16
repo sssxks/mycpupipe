@@ -1,6 +1,8 @@
 `timescale 1ns/1ps
 `default_nettype none
 
+`include "pipeline_flow.sv"
+
 module if_id_reg (
     input logic clk,
     input logic reset,

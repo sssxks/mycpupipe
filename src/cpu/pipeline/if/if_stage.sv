@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
+`default_nettype none
 
 module if_stage (
     input  logic        clk,
     input  logic        reset,
-    input  logic        enable,
 
     output if_id_flow_t outflow,
 

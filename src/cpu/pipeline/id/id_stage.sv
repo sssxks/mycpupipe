@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 `default_nettype none
+
 `include "control_signals.sv"
 `include "pipeline_flow.sv"
 
@@ -15,11 +16,10 @@ module id_stage (
     input logic [4:0]  rd_addr,
     input logic [31:0] rd_data
 );
+    // this control signal is used internally
     id_control_t id_ctrl;
 
-    controller ctrl (
-        .rst(reset),
-
+    controller controller_instance (
         .opcode(inflow.instr[6:2]),
         .fun3(inflow.instr[14:12]),
         .fun7(inflow.instr[30]),
@@ -30,14 +30,14 @@ module id_stage (
         .wb_ctrl(outflow.wb_ctrl)
     );
 
-    immgen imm_gen (
+    immgen immgen_instance (
         .ImmSel(id_ctrl.ImmSel),
 
-        .instr(inflow.instr),
-        .imm_out(outflow.immediate)
+        .instr(inflow.instr[31:7]),
+        .immediate(outflow.immediate)
     );
 
-    regs register_file (
+    regs regs_instance (
         .clk(clk),
         .rst(reset),
 

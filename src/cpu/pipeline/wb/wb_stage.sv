@@ -1,4 +1,7 @@
 `timescale 1ns/1ps
+`default_nettype none
+
+`include "pipeline_flow.sv"
 
 module wb_stage (
     input mem_wb_flow_t inflow,

@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 `default_nettype none
+
 `include "pipeline_flow.sv"
 
 module pipeline(
@@ -26,7 +27,6 @@ module pipeline(
     if_stage if_stage_instance (
         .clk(clk),
         .reset(reset),
-        .enable(1'b1),
         
         .outflow(if_flowout),
 

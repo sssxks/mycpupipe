@@ -1,4 +1,7 @@
 `timescale 1ns/1ps
+`default_nettype none
+
+`include "pipeline_flow.sv"
 
 module ex_mem_reg (
     input logic clk,

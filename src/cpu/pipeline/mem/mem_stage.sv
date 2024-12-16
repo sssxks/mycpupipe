@@ -1,4 +1,7 @@
 `timescale 1ns/1ps
+`default_nettype none
+
+`include "pipeline_flow.sv"
 
 module mem_stage (
     input ex_mem_flow_t inflow,

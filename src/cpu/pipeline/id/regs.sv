@@ -1,7 +1,10 @@
 `timescale 1ns/1ps
+`default_nettype none
 
 module regs(
-    input wire clk, rst, reg_write,
+    input wire clk, rst,
+    
+    input wire reg_write,
     input wire [4:0] rs1_addr, rs2_addr, wt_addr,
     input wire [31:0] wt_data,
     output wire [31:0] rs1_data, rs2_data
