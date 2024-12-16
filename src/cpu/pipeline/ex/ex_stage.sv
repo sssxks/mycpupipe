@@ -1,27 +1,26 @@
 `timescale 1ns/1ps
+`default_nettype none
+`include "pipeline_flow.sv"
 
 module ex_stage (
-    input logic [31:0] pc,
-    input logic [31:0] rs1_data,
-    input logic [31:0] rs2_data,
-    input logic [31:0] immediate,
-
-    input ex_control_t ex_ctrl,
-
-    output logic [31:0] alu_result,
-    output logic zero,
-    output logic [31:0] pc_incr,
-    output logic [31:0] pc_offset
+    input id_ex_flow_t inflow,
+    output ex_mem_flow_t outflow
 );
     alu alu_instance (
-        .a(rs1_data),
-        .b(ex_ctrl.ALUSrcB ? immediate : rs2_data),
-        .op(ex_ctrl.ALUControl),
-        .result(alu_result),
-        .zero(zero)
+        .a(inflow.rs1_data),
+        .b(inflow.ex_ctrl.ALUSrcB ?
+           inflow.immediate : inflow.rs2_data),
+        .op(inflow.ex_ctrl.ALUControl),
+        .result(outflow.alu_result),
+        .zero(outflow.zero)
     );
 
-    assign pc_incr = pc + 4;
-    assign pc_offset = ex_ctrl.PCOffset ? ALU_out : pc + imm_out; // for jalr
+    assign outflow.pc_incr = inflow.pc + 32'd4;
+    assign outflow.pc_offset = inflow.ex_ctrl.PCOffset ?
+    outflow.alu_result : inflow.pc + inflow.immediate; // for jalr
 
+    // forward control signals
+    assign outflow.mem_ctrl = inflow.mem_ctrl;
+    assign outflow.wb_ctrl = inflow.wb_ctrl;
+    assign outflow.rs2_data = inflow.rs2_data;
 endmodule

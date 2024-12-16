@@ -1,3 +1,6 @@
+`ifndef CONTROL_SIGNALS_H
+`define CONTROL_SIGNALS_H
+
 // package control_signals;
     typedef struct {
         logic [2:0] ImmSel; // select signal to immgen. i-type / s-type / sb-type / uj-type
@@ -26,3 +29,5 @@
     } wb_control_t;
 
 // endpackage
+
+`endif // CONTROL_SIGNALS_H

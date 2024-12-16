@@ -1,28 +1,23 @@
-`include "header.sv"
-`include "debug.vh"
+`include "definitions.sv"
+// `include "debug.vh"
 
 module soc_simulation(
     input wire clk,
     input wire reset
 );
-    wire [31:0] instruction;
-    wire [31:0] program_counter;
-    
-    data_memory_face mem_if();
+    instr_memory_if instr_mem_if();    
+    data_memory_if mem_if();
 
-    SCPU uut (
+    cpu uut (
         .clk(clk),
         .reset(reset),
 
-        .inst_in(instruction),
-        .PC_out(program_counter),
-        
+        .instr_mem_if(instr_mem_if.user),
         .mem_if(mem_if.cpu)
     );
 
     instruction_memory U2(
-        .a(program_counter[11:2]),
-        .spo(instruction)
+        .instr_mem_if(instr_mem_if.mem)
     );
 
     my_data_memory U3 (
@@ -32,18 +27,3 @@ module soc_simulation(
 endmodule
 
 
-module soc_simulation_tb;
-    reg clk;
-    reg reset;
-
-    soc_simulation m0(.clk(clk), .rst(rst));
-
-    initial begin
-        clk = 1'b0;
-        rst = 1'b1;
-        #5;
-        rst = 1'b0;
-    end
-
-    always #50 clk = ~clk;
-endmodule

@@ -5,20 +5,25 @@ module if_stage (
     input  logic        reset,
     input  logic        enable,
 
-    input  logic [31:0] pc_in,
+    output if_id_flow_t outflow,
+
+    input  logic [31:0] pc_offset,
+    input  logic [31:0] pc_incr,
     input  logic        PCSrc,
-    output logic [31:0] pc_out
+    
+    instr_memory_if.user instr_memory_if
 );
-    logic [31:0] pc_next;
     logic [31:0] pc_curr;
     
     pc #(.WIDTH(32)) pc_instance (
         .clk(clk),
         .reset(reset),
-        .pc_in(pc_next),
+
+        .pc_in(PCSrc ? pc_offset : pc_incr),
         .pc_out(pc_curr)
     );
     
-    assign pc_next = PCSrc ? pc_in : pc_curr + 32'd4;
-    assign pc_out = pc_curr;
+    assign outflow.pc = pc_curr;
+    assign instr_memory_if.pc = pc_curr;
+    assign outflow.instr = instr_memory_if.instr;
 endmodule

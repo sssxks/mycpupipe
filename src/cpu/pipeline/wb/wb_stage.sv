@@ -20,10 +20,10 @@ module wb_stage (
 
     always_comb begin
         case (wb_ctrl.MemtoReg)
-            2'd0: rd_data = ALU_out;
-            2'd1: rd_data = Data_in;
-            2'd2: rd_data = wb_ctrl.Jump ? PC_incr : PC_offset; // jump=1 -> jalr, jump=0 -> auipc
-            2'd3: rd_data = imm_out;
+            2'd0: rd_data = alu_result;
+            2'd1: rd_data = data_in;
+            2'd2: rd_data = wb_ctrl.Jump ? pc_incr : pc_offset; // jump=1 -> jalr, jump=0 -> auipc
+            2'd3: rd_data = immediate;
         endcase
     end
 endmodule
