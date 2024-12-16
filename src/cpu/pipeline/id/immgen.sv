@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 `include "definitions.sv"
 
 module immgen(
@@ -5,7 +6,7 @@ module immgen(
     input wire [31:0] instr, // raw instructiond
     output reg [31:0] imm_out
 );
-    always @(*) begin
+    always_comb begin
         case(ImmSel)
             `IMMGEN_I:imm_out = {{20{instr[31]}},instr[31:20]};
             `IMMGEN_S:imm_out = {{20{instr[31]}}, instr[31:25], instr[11:7]};

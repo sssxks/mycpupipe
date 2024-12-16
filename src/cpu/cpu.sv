@@ -1,4 +1,6 @@
 `timescale 1ns/1ps
+`default_nettype none
+
 `include "control_signals.sv"
 
 module cpu (
@@ -11,22 +13,20 @@ module cpu (
     data_memory_if.cpu mem_if
 );
     logic [31:0] if_pc;
-
     logic PCSrc;
     logic [31:0] pc_in;
-
     if_stage if_stage_instance (
         .clk(clk),
         .reset(reset),
         .enable(1'b1),
         
-        .pc_in(pc_in),
         .pc_out(if_pc),
 
+        .pc_in(pc_in),
         .PCSrc(PCSrc)
     );
 
-    // pass pc to instruction memory
+    // pass pc to instruction memory & retrieve instr
     assign pc = if_pc;
 
     if_id_reg if_id_reg_instance (
@@ -43,7 +43,6 @@ module cpu (
     ex_control_t id_ex_ctrl;
     mem_control_t id_mem_ctrl;
     wb_control_t id_wb_ctrl;
-
     id_stage id_stage_instance (
         .clk(clk),
         .reset(reset),
@@ -70,4 +69,28 @@ module cpu (
         .id_mem_ctrl(id_mem_ctrl),
         .id_wb_ctrl(id_wb_ctrlf)
     );
+
+    ex_stage ex_stage_instance (
+
+    );
+
+    ex_mem_reg ex_mem_reg_instance (
+
+    );
+
+    mem_stage mem_stage_instance (
+    );
+
+    mem_wb_reg mem_wb_reg_instance (
+        .clk(clk),
+        .reset(reset),
+
+    );
+
+    wb_stage wb_stage_instance (
+        .clk(clk),
+        .reset(reset),
+
+    );
+    
 endmodule

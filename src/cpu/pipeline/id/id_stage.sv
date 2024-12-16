@@ -5,20 +5,22 @@
 module id_stage (
     input logic clk,
     input logic reset,
-    
-    input logic        RegWriteIn,
-    input logic [4:0]  rd_addr_in,
-    input logic [31:0] rd_data,
+
     input logic [31:0] instr,
 
     output logic [31:0] rs1_data,
     output logic [31:0] rs2_data,
-    output logic [31:0] rd_addr_out,
+    output logic [4:0] rd_addr_out,
     output logic [31:0] immediate,
 
     output ex_control_t ex_ctrl,
     output mem_control_t mem_ctrl,
-    output wb_control_t wb_ctrl
+    output wb_control_t wb_ctrl,
+
+    // from wb
+    input logic        RegWriteIn,
+    input logic [4:0]  rd_addr_in,
+    input logic [31:0] rd_data
 
     // output logic       ALUSrcB,
     // output logic [3:0] ALUControl,
