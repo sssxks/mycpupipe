@@ -4,13 +4,13 @@ module soc_simulation_tb;
     reg clk;
     reg reset;
 
-    soc_simulation m0(.clk(clk), .reset(rst));
+    soc_simulation m0(.clk(clk), .reset(reset));
 
     initial begin
         clk = 1'b0;
-        rst = 1'b1;
+        reset = 1'b1;
         #5;
-        rst = 1'b0;
+        reset = 1'b0;
     end
 
     always #50 clk = ~clk;

@@ -7,7 +7,7 @@ interface instr_memory_if;
         output pc
     );
 
-    modport memory (
+    modport mem (
         output instr,
         input pc
     );

@@ -19,8 +19,12 @@ module ex_stage (
     assign outflow.pc_offset = inflow.ex_ctrl.PCOffset ?
     outflow.alu_result : inflow.pc + inflow.immediate; // for jalr
 
+    // forward data
+    assign outflow.immediate = inflow.immediate;
+    assign outflow.rs2_data = inflow.rs2_data;
+    assign outflow.rd_addr = inflow.rd_addr;
+
     // forward control signals
     assign outflow.mem_ctrl = inflow.mem_ctrl;
     assign outflow.wb_ctrl = inflow.wb_ctrl;
-    assign outflow.rs2_data = inflow.rs2_data;
 endmodule

@@ -1,6 +1,6 @@
 interface inner_memory_if;
     logic MemRW;
-    logic RWType;
+    logic [2:0] RWType;
     logic [31:0] addr_out;
     logic [31:0] data_out;
     logic [31:0] data_in;

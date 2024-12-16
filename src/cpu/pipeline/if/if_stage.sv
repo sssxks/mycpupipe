@@ -8,7 +8,6 @@ module if_stage (
     output if_id_flow_t outflow,
 
     input  logic [31:0] pc_offset,
-    input  logic [31:0] pc_incr,
     input  logic        PCSrc,
     
     instr_memory_if.user instr_memory_if
@@ -19,7 +18,7 @@ module if_stage (
         .clk(clk),
         .reset(reset),
 
-        .pc_in(PCSrc ? pc_offset : pc_incr),
+        .pc_in(PCSrc ? pc_offset : pc_curr + 32'd4),
         .pc_out(pc_curr)
     );
     

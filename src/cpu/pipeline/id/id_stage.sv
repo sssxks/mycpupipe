@@ -11,7 +11,7 @@ module id_stage (
     output id_ex_flow_t outflow,
 
     // from wb
-    input logic        RegWriteIn,
+    input logic        RegWrite,
     input logic [4:0]  rd_addr,
     input logic [31:0] rd_data
 );
@@ -41,7 +41,7 @@ module id_stage (
         .clk(clk),
         .rst(reset),
 
-        .reg_write(RegWriteIn),
+        .reg_write(RegWrite),
         .rs1_addr(inflow.instr[19:15]),
         .rs2_addr(inflow.instr[24:20]),
         .wt_addr(rd_addr),

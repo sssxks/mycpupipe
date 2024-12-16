@@ -9,18 +9,22 @@ module cpu (
     data_memory_if.cpu mem_if,
     instr_memory_if.user instr_mem_if
 );
-    if_id_flow_t if_flowout;
-    if_id_flow_t id_flowin;
-    id_ex_flow_t id_flowout;
-    id_ex_flow_t ex_flowin;
-    ex_mem_flow_t ex_flowout;
-    ex_mem_flow_t mem_flowin;
-    mem_wb_flow_t mem_flowout;
-    mem_wb_flow_t wb_flowin;
+    // forward flow
+    if_id_flow_t if_flowout, id_flowin;
+    id_ex_flow_t id_flowout, ex_flowin;
+    ex_mem_flow_t ex_flowout, mem_flowin;
+    mem_wb_flow_t mem_flowout, wb_flowin;
+
+    // mem -> if backward flow
+    logic PCSrc;
+    logic [31:0] pc_offset;
+    // wb -> id backward flow
+    logic RegWrite;
+    logic [4:0] rd_addr;
+    logic [31:0] rd_data;
 
     inner_memory_if inner_memory_if_instance();
 
-    logic PCSrc;
     if_stage if_stage_instance (
         .clk(clk),
         .reset(reset),
@@ -30,7 +34,6 @@ module cpu (
 
         .PCSrc(PCSrc),
         .pc_offset(pc_offset),
-        .pc_incr(pc_incr),
 
         .instr_memory_if(instr_mem_if)
     );
@@ -50,7 +53,7 @@ module cpu (
         .inflow(id_flowin),
         .outflow(id_flowout),
 
-        .RegWriteIn(RegWriteIn),
+        .RegWrite(RegWrite),
         .rd_addr(rd_addr),
         .rd_data(rd_data)
     );
@@ -77,18 +80,28 @@ module cpu (
     );
 
     mem_stage mem_stage_instance (
+        .inflow(mem_flowin),
+        .outflow(mem_flowout),
+
+        .PCSrc(PCSrc),
+        .pc_offset(pc_offset),
+
         .mem_if(inner_memory_if_instance.user)
     );
 
     mem_wb_reg mem_wb_reg_instance (
         .clk(clk),
-        .reset(reset)
+        .reset(reset),
+
+        .mem_flow(mem_flowout),
+        .wb_flow(wb_flowin)
     );
 
     wb_stage wb_stage_instance (
-        .clk(clk),
-        .reset(reset)
+        .inflow(wb_flowin),
 
+        .rd_addr(rd_addr),
+        .rd_data(rd_data),
+        .RegWrite(RegWrite)
     );
-    
 endmodule
