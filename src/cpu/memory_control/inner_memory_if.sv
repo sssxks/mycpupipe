@@ -1,6 +1,6 @@
 interface inner_memory_if;
     logic MemRW;
-    logic [2:0] RWType;
+    logic [2:0] RWType; // FUN3 of load/store instruction
     logic [31:0] addr_out;
     logic [31:0] data_out;
     logic [31:0] data_in;
@@ -13,7 +13,7 @@ interface inner_memory_if;
         input data_in
     );
 
-    modport controller(
+    modport handler(
         input MemRW,
         input RWType,
         input addr_out,
