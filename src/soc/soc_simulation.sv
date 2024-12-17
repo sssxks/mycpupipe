@@ -20,7 +20,7 @@ module soc_simulation(
         .instr_mem_if(instr_mem_if.mem)
     );
 
-    my_data_memory U3 (
+    data_memory U3 (
         .clk(clk),
         .mem_if(data_mem_if.mem)
     );

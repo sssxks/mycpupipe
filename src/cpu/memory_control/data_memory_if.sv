@@ -1,6 +1,6 @@
 interface data_memory_if;
     logic [3:0] MemWriteEnable;// Memory read/write signal
-    logic [31:0] addr_out; // Address output to memory, should be aligned to 4 bytes
+    logic [11:2] addr_out; // Address output to memory, should be aligned to 4 bytes
     logic [31:0] data_in; // Data input from memory
     logic [31:0] data_out; // Data output to memory
 

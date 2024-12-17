@@ -1,6 +1,3 @@
-// `timescale 1ns / 1ps
-// `default_nettype none
-
 // DEFINITIONS for RV32I
 
 // opcode
@@ -115,5 +112,3 @@
 `define HALF   3'b001
 `define HALF_U 3'b101
 `define WORD   3'b010
-
-
