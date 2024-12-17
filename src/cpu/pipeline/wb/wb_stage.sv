@@ -9,7 +9,9 @@ module wb_stage (
     // back to ID
     output logic [4:0] rd_addr,
     output logic [31:0] rd_data,
-    output logic RegWrite
+    output logic RegWrite,
+
+    forwarding_if.wb_stage fd
 );
     assign RegWrite = inflow.wb_ctrl.RegWrite;
     assign rd_addr = inflow.rd_addr;
@@ -22,4 +24,9 @@ module wb_stage (
             2'd3: rd_data = inflow.immediate;
         endcase
     end
+
+    // forwarding
+    assign fd.wb.RegWrite = RegWrite;
+    assign fd.wb.rd_data = rd_data;
+    assign fd.wb.rd_addr = rd_addr;
 endmodule

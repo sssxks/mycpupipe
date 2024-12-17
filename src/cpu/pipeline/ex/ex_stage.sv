@@ -1,15 +1,32 @@
 `timescale 1ns/1ps
 `default_nettype none
 `include "pipeline_flow.sv"
+`include "forwarding_types.sv"
 
 module ex_stage (
     input id_ex_flow_t inflow,
-    output ex_mem_flow_t outflow
+    output ex_mem_flow_t outflow,
+
+    forwarding_if.ex_stage fd
 );
+    logic [31:0] a, b;
+    always_comb begin
+        case (fd.a)
+            forwarding_t::FORWARD_MEM: a = fd.data.mem;
+            forwarding_t::FORWARD_WB: a = fd.data.wb;
+            default: a = inflow.rs1_data;
+        endcase
+        case (fd.b)
+            forwarding_t::FORWARD_MEM: b = fd.data.mem;
+            forwarding_t::FORWARD_WB: b = fd.data.wb;
+            default: b = inflow.ex_ctrl.ALUSrcB ?
+           inflow.immediate : inflow.rs2_data.rs2_data;
+        endcase
+    end
+
     alu alu_instance (
-        .a(inflow.rs1_data),
-        .b(inflow.ex_ctrl.ALUSrcB ?
-           inflow.immediate : inflow.rs2_data),
+        .a(a),
+        .b(b),
         .op(inflow.ex_ctrl.ALUControl),
         .result(outflow.alu_result),
         .zero(outflow.zero)

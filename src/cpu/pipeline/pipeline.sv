@@ -24,6 +24,13 @@ module pipeline(
     logic [4:0] rd_addr;
     logic [31:0] rd_data;
 
+
+    // forwarding
+    forwarding_if fd();
+    forwarding_unit fu(
+        .c(fd.control)
+    );
+
     if_stage if_stage_instance (
         .clk(clk),
         .reset(reset),
@@ -66,7 +73,9 @@ module pipeline(
 
     ex_stage ex_stage_instance (
         .inflow(ex_flowin),
-        .outflow(ex_flowout)
+        .outflow(ex_flowout),
+
+        .fd(fd.ex_stage)
     );
 
     ex_mem_reg ex_mem_reg_instance (
@@ -84,6 +93,7 @@ module pipeline(
         .PCSrc(PCSrc),
         .pc_offset(pc_offset),
 
+        .fd(fd.mem_stage),
         .mem_if(inner_mem_if)
     );
 
@@ -100,6 +110,8 @@ module pipeline(
 
         .rd_addr(rd_addr),
         .rd_data(rd_data),
-        .RegWrite(RegWrite)
+        .RegWrite(RegWrite),
+
+        .fd(fd.wb_stage)
     );
 endmodule
