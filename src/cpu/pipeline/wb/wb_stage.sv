@@ -18,9 +18,7 @@ module wb_stage (
         case (inflow.wb_ctrl.MemtoReg)
             2'd0: rd_data = inflow.alu_result;
             2'd1: rd_data = inflow.data_in;
-            2'd2: rd_data = inflow.pc_incr;
-            // TODO add the impl for auipc later
-            // 2'd2: rd_data = inflow.wb_ctrl.Jump ? inflow.pc_incr : inflow.pc_offset; // jump=1 -> jalr, jump=0 -> auipc
+            2'd2: rd_data = inflow.pc_write;
             2'd3: rd_data = inflow.immediate;
         endcase
     end

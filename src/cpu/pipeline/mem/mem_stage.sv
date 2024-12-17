@@ -20,8 +20,9 @@ module mem_stage (
     assign mem_if.data_out = inflow.rs2_data;
     assign outflow.data_in = mem_if.data_in;
 
+    // decide which pc next to write to register
+    assign outflow.pc_write = inflow.mem_ctrl.Jump ? inflow.pc_incr : inflow.pc_offset; // jump=1 -> jalr, jump=0 -> auipc
     // forward data
-    assign outflow.pc_incr = inflow.pc_incr;
     assign outflow.immediate = inflow.immediate;
     assign outflow.alu_result = inflow.alu_result;
     assign outflow.rd_addr = inflow.rd_addr;

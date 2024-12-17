@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 `include "definitions.sv"
 
-// providing endianess and sign extension
+// providing half, byte length and sign extension
 module memory_handler (
     inner_memory_if.handler cpu,
     data_memory_if.cpu mem
