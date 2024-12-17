@@ -33,9 +33,9 @@ while true; do
   done
   
   # Append additional verilator options
+  echo "-I\"$INCLUDE_DIR\"" >> "$new_content"
   echo "--top-module soc_simulation_tb" >> "$new_content"
   echo "--error-limit 4 -Wall" >> "$new_content"
-  echo "-I\"$INCLUDE_DIR\"" >> "$new_content"
 
   # Check if the content has changed and print the diff
   if [ "$prev_content" != "$(cat "$new_content")" ]; then

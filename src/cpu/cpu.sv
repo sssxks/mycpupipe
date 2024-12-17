@@ -2,8 +2,8 @@
 `default_nettype none
 
 module cpu (
-    input clk,
-    input reset,
+    input logic clk,
+    input logic reset,
 
     instr_memory_if.user instr_mem_if,
     data_memory_if.cpu data_mem_if
