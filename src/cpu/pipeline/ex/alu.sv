@@ -20,8 +20,8 @@ module alu(
             `ALU_SLTU: result = (a < b) 
                                 ? 32'b1 : 32'b0; // SLTU
             `ALU_XOR : result = a ^ b; // XOR
-            `ALU_SRL : result = a >> b[5:0]; // SRL
-            `ALU_SRA : result = $signed(a) >>> b[5:0]; // SRA
+            `ALU_SRL : result = a >> b[4:0]; // SRL
+            `ALU_SRA : result = $signed(a) >>> b[4:0]; // SRA
             `ALU_OR  : result = a | b; // OR
             `ALU_AND : result = a & b; // AND
             default: result = 32'bx;
