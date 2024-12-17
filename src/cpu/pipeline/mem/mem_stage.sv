@@ -13,22 +13,23 @@ module mem_stage (
 
     inner_memory_if.user mem_if
 );
+    // communicate with data memory
     assign mem_if.addr_out = inflow.alu_result;
     assign mem_if.MemRW = inflow.mem_ctrl.MemRW;
     assign mem_if.RWType = inflow.mem_ctrl.RWType;
     assign mem_if.data_out = inflow.rs2_data;
-
     assign outflow.data_in = mem_if.data_in;
+
+    // forward data
     assign outflow.pc_incr = inflow.pc_incr;
+    assign outflow.immediate = inflow.immediate;
+    assign outflow.alu_result = inflow.alu_result;
+    assign outflow.rd_addr = inflow.rd_addr;
+    // forward control
+    assign outflow.wb_ctrl = inflow.wb_ctrl;
 
     assign pc_offset = inflow.pc_offset;
-
-    assign outflow.immediate = inflow.immediate;
-    assign outflow.rd_addr = inflow.rd_addr;
-    assign outflow.wb_ctrl = inflow.wb_ctrl;
-    assign outflow.alu_result = inflow.alu_result;
-
     // assign PCSrc = mem_ctrl.Jump || (mem_ctrl.Branch && (mem_ctrl.InverseBranch ? ~zero : zero));
     // simplifies to
-    assign PCSrc = inflow.mem_ctrl.Jump || (inflow.mem_ctrl.Branch ^ inflow.zero);
+    assign PCSrc = inflow.mem_ctrl.Jump || (inflow.mem_ctrl.Branch & (inflow.mem_ctrl.InverseBranch ^ inflow.zero));
 endmodule

@@ -13,7 +13,7 @@ module controller(
     output mem_control_t mem_ctrl,
     output wb_control_t wb_ctrl
 );
-    always @(*) begin
+    always_comb begin
         case (opcode)
         `OPCODE_R_TYPE: begin
             id_ctrl.ImmSel = 3'bxxx; // doesn't matter

@@ -25,3 +25,5 @@ project/
 
 *.f
 *.ipynb
+
+obsolete/

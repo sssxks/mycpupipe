@@ -4,7 +4,7 @@ module data_memory (
 );
     data_memory_impl actual_memory(
         .clka(~clk), 
-        .wea(mem_if.MemWriteEnable), 
+        .wea(mem_if.WriteEnable), 
         .addra(mem_if.addr_out[11:2]),
         .dina(mem_if.data_out), 
         .douta(mem_if.data_in) 

@@ -6,6 +6,7 @@
 module wb_stage (
     input mem_wb_flow_t inflow,
 
+    // back to ID
     output logic [4:0] rd_addr,
     output logic [31:0] rd_data,
     output logic RegWrite

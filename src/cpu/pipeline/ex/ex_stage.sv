@@ -23,8 +23,7 @@ module ex_stage (
     assign outflow.immediate = inflow.immediate;
     assign outflow.rs2_data = inflow.rs2_data;
     assign outflow.rd_addr = inflow.rd_addr;
-
-    // forward control signals
+    // forward control
     assign outflow.mem_ctrl = inflow.mem_ctrl;
     assign outflow.wb_ctrl = inflow.wb_ctrl;
 endmodule

@@ -8,7 +8,7 @@ module cpu (
     instr_memory_if.user instr_mem_if,
     data_memory_if.cpu data_mem_if
 );
-    inner_memory_if inner_mem_if_instance;
+    inner_memory_if inner_mem_if_instance();
 
     pipeline pipeline_instance(
         .clk(clk),
