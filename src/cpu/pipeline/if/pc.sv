@@ -5,6 +5,7 @@ module pc #(parameter WIDTH = 32) (
     input  logic clk,
     input  logic reset,
 
+    input  logic update_n,
     input  logic [WIDTH-1:0] pc_in,
     output logic [WIDTH-1:0] pc_out
 );
@@ -12,7 +13,11 @@ module pc #(parameter WIDTH = 32) (
         if (reset) begin
             pc_out <= 0;
         end else begin
-            pc_out <= pc_in;
+            if (update_n) begin
+                pc_out <= pc_out;
+            end else begin
+                pc_out <= pc_in;
+            end 
         end
     end
 endmodule

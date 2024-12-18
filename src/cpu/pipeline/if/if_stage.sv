@@ -9,6 +9,8 @@ module if_stage (
 
     input  logic [31:0] pc_offset,
     input  logic        PCSrc,
+
+    hazard_if.if_stage hd,
     
     instr_memory_if.user instr_memory_if
 );
@@ -16,6 +18,7 @@ module if_stage (
         .clk(clk),
         .reset(reset),
 
+        .update_n(hd.Stall),
         .pc_in(PCSrc ? pc_offset : outflow.pc + 32'd4),
         .pc_out(outflow.pc)
     );

@@ -27,8 +27,14 @@ module pipeline(
 
     // forwarding
     forwarding_if fd();
-    forwarding_unit fu(
+    forwarding_unit forwarding_instance(
         .c(fd.control)
+    );
+
+    // hazard
+    hazard_if hd();
+    hazard_unit hazard_instance(
+        .c(hd.control)
     );
 
     if_stage if_stage_instance (
@@ -40,6 +46,7 @@ module pipeline(
         .PCSrc(PCSrc),
         .pc_offset(pc_offset),
 
+        .hd(hd.if_stage),
         .instr_memory_if(instr_mem_if)
     );
 
@@ -60,7 +67,9 @@ module pipeline(
 
         .RegWrite(RegWrite),
         .rd_addr(rd_addr),
-        .rd_data(rd_data)
+        .rd_data(rd_data),
+
+        .hd(hd.id_stage)
     );
 
     id_ex_reg id_ex_reg_instance (
@@ -75,7 +84,8 @@ module pipeline(
         .inflow(ex_flowin),
         .outflow(ex_flowout),
 
-        .fd(fd.ex_stage)
+        .fd(fd.ex_stage),
+        .hd(hd.ex_stage)
     );
 
     ex_mem_reg ex_mem_reg_instance (

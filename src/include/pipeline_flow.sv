@@ -14,6 +14,8 @@ typedef struct packed{
     logic [31:0]  pc;
     logic [31:0]  rs1_data;
     logic [31:0]  rs2_data;
+    logic [4:0]   rs1_addr; // added for forwarding
+    logic [4:0]   rs2_addr; // added for forwarding
     logic [4:0]   rd_addr;
     logic [31:0]  immediate;
 

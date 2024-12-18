@@ -7,8 +7,12 @@ module ex_stage (
     input id_ex_flow_t inflow,
     output ex_mem_flow_t outflow,
 
-    forwarding_if.ex_stage fd
+    forwarding_if.ex_stage fd,
+    hazard_if.ex_stage hd
 );
+    assign fd.ex.rs1_addr = inflow.rs1_addr;
+    assign fd.ex.rs2_addr = inflow.rs2_addr;
+    
     logic [31:0] a, b;
     always_comb begin
         case (fd.a)
@@ -20,9 +24,12 @@ module ex_stage (
             forwarding_t::FORWARD_MEM: b = fd.data.mem;
             forwarding_t::FORWARD_WB: b = fd.data.wb;
             default: b = inflow.ex_ctrl.ALUSrcB ?
-           inflow.immediate : inflow.rs2_data.rs2_data;
+           inflow.immediate : inflow.rs2_data;
         endcase
     end
+
+    assign hd.ex.Load = inflow.wb_ctrl.MemtoReg == 2'd1;
+    assign hd.ex.rd_addr = inflow.rd_addr;
 
     alu alu_instance (
         .a(a),

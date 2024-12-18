@@ -31,4 +31,10 @@ typedef struct packed{
 
 // endpackage
 
+// control signals for nop (stall) mainly choosed arbitrary, but
+// MemRW, Jump, Branch, RegWrite are set to 0 to avoid any side effects
+const ex_control_t NOP_EX_CTRL = '{ALUControl: 4'b0000, ALUSrcB: 1'b0, PCOffset: 1'b0}; 
+const mem_control_t NOP_MEM_CTRL = '{MemRW: 1'b0, RWType: 3'b000, Jump: 1'b0, Branch: 1'b0, InverseBranch: 1'b0};
+const wb_control_t NOP_WB_CTRL = '{MemtoReg: 2'b00, RegWrite: 1'b0};
+
 `endif // CONTROL_SIGNALS_SV
