@@ -12,18 +12,18 @@ module alu(
 );
     always @(*) begin
         case (op)
-            `ALU_ADD : result = a + b; // ADD
-            `ALU_SUB : result = a - b; // SUB
-            `ALU_SLL : result = a << b[5:0]; // SLL
-            `ALU_SLT : result = ($signed(a) < $signed(b)) 
+            alu_t::ALU_ADD : result = a + b; // ADD
+            alu_t::ALU_SUB : result = a - b; // SUB
+            alu_t::ALU_SLL : result = a << b[5:0]; // SLL
+            alu_t::ALU_SLT : result = ($signed(a) < $signed(b)) 
                                 ? 32'b1 : 32'b0; // SLT
-            `ALU_SLTU: result = (a < b) 
+            alu_t::ALU_SLTU: result = (a < b) 
                                 ? 32'b1 : 32'b0; // SLTU
-            `ALU_XOR : result = a ^ b; // XOR
-            `ALU_SRL : result = a >> b[4:0]; // SRL
-            `ALU_SRA : result = $signed(a) >>> b[4:0]; // SRA
-            `ALU_OR  : result = a | b; // OR
-            `ALU_AND : result = a & b; // AND
+            alu_t::ALU_XOR : result = a ^ b; // XOR
+            alu_t::ALU_SRL : result = a >> b[4:0]; // SRL
+            alu_t::ALU_SRA : result = $signed(a) >>> b[4:0]; // SRA
+            alu_t::ALU_OR  : result = a | b; // OR
+            alu_t::ALU_AND : result = a & b; // AND
             default: result = 32'bx;
         endcase
     end

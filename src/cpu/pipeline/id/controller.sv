@@ -4,7 +4,7 @@
 
 module controller(    
     // from instruction
-    input wire [4:0] opcode, // instruction[6:2]
+    input wire opcode_t opcode, // instruction[6:2]
     input wire [2:0] fun3, // instruction[12:14]
     input wire fun7, // instruction[30]
 
@@ -15,8 +15,8 @@ module controller(
 );
     always_comb begin
         case (opcode)
-        `OPCODE_R_TYPE: begin
-            id_ctrl.ImmSel = 3'bxxx; // doesn't matter
+        opcode_t::OPCODE_R_TYPE: begin
+            id_ctrl.ImmSel = immgen_t'('x); // doesn't matter
             ex_ctrl.ALUSrcB = 1'b0; // rs2
             wb_ctrl.MemtoReg = 2'd0; // alu result
             
@@ -32,8 +32,8 @@ module controller(
 
             ex_ctrl.ALUControl = {fun7, fun3};
         end
-        `OPCODE_IMMEDIATE_CALCULATION: begin
-            id_ctrl.ImmSel = `IMMGEN_I;
+        opcode_t::OPCODE_IMMEDIATE_CALCULATION: begin
+            id_ctrl.ImmSel = immgen_t::IMMGEN_I;
             ex_ctrl.ALUSrcB = 1'b1;
             wb_ctrl.MemtoReg = 2'd0;
 
@@ -47,10 +47,10 @@ module controller(
             mem_ctrl.MemRW = 1'b0;
             mem_ctrl.RWType = 3'b000; // doesn't matter
 
-            ex_ctrl.ALUControl = {fun3 == `FUN3_SR ? fun7 : 1'b0, fun3};
+            ex_ctrl.ALUControl = {fun3 == fun3_t::FUN3_SR ? fun7 : 1'b0, fun3};
         end
-        `OPCODE_LOAD: begin
-            id_ctrl.ImmSel = `IMMGEN_I;
+        opcode_t::OPCODE_LOAD: begin
+            id_ctrl.ImmSel = immgen_t::IMMGEN_I;
             ex_ctrl.ALUSrcB = 1'b1;
             wb_ctrl.MemtoReg = 2'd1;
 
@@ -64,10 +64,10 @@ module controller(
             mem_ctrl.MemRW = 1'b0;
             mem_ctrl.RWType = fun3;
 
-            ex_ctrl.ALUControl = `ALU_ADD;
+            ex_ctrl.ALUControl = alu_t::ALU_ADD;
         end
-        `OPCODE_JALR: begin
-            id_ctrl.ImmSel = `IMMGEN_I; // i type
+        opcode_t::OPCODE_JALR: begin
+            id_ctrl.ImmSel = immgen_t::IMMGEN_I; // i type
             ex_ctrl.ALUSrcB = 1'b1;
             wb_ctrl.MemtoReg = 2'd2;
 
@@ -81,10 +81,10 @@ module controller(
             mem_ctrl.MemRW = 1'b0;
             mem_ctrl.RWType = 3'b000; // doesn't matter
 
-            ex_ctrl.ALUControl = `ALU_ADD; // ADD
+            ex_ctrl.ALUControl = alu_t::ALU_ADD; // ADD
         end
-        `OPCODE_S_TYPE: begin
-            id_ctrl.ImmSel = `IMMGEN_S;
+        opcode_t::OPCODE_S_TYPE: begin
+            id_ctrl.ImmSel = immgen_t::IMMGEN_S;
             ex_ctrl.ALUSrcB = 1'b1;
             wb_ctrl.MemtoReg = 2'd0;
 
@@ -98,10 +98,10 @@ module controller(
             mem_ctrl.MemRW = 1'b1;
             mem_ctrl.RWType = fun3;
 
-            ex_ctrl.ALUControl = `ALU_ADD; // ADD
+            ex_ctrl.ALUControl = alu_t::ALU_ADD; // ADD
         end
-        `OPCODE_SB_TYPE: begin // SB-type branch
-            id_ctrl.ImmSel = `IMMGEN_SB;
+        opcode_t::OPCODE_SB_TYPE: begin // SB-type branch
+            id_ctrl.ImmSel = immgen_t::IMMGEN_SB;
             ex_ctrl.ALUSrcB = 1'b0;
             wb_ctrl.MemtoReg = 2'd0; // ALU result
 
@@ -116,17 +116,17 @@ module controller(
             mem_ctrl.RWType = 3'b000; // doesn't matter
 
             case (fun3)
-                `FUN3_BEQ: ex_ctrl.ALUControl = `ALU_EQ;
-                `FUN3_BNE: ex_ctrl.ALUControl = `ALU_NE;
-                `FUN3_BLT: ex_ctrl.ALUControl = `ALU_LT;
-                `FUN3_BGE: ex_ctrl.ALUControl = `ALU_GE;
-                `FUN3_BLTU: ex_ctrl.ALUControl = `ALU_LTU;
-                `FUN3_BGEU: ex_ctrl.ALUControl = `ALU_GEU;
+                fun3_branch_t::FUN3_BEQ: ex_ctrl.ALUControl = ALU_EQ;
+                fun3_branch_t::FUN3_BNE: ex_ctrl.ALUControl = ALU_NE;
+                fun3_branch_t::FUN3_BLT: ex_ctrl.ALUControl = ALU_LT;
+                fun3_branch_t::FUN3_BGE: ex_ctrl.ALUControl = ALU_GE;
+                fun3_branch_t::FUN3_BLTU: ex_ctrl.ALUControl = ALU_LTU;
+                fun3_branch_t::FUN3_BGEU: ex_ctrl.ALUControl = ALU_GEU;
                 default: ex_ctrl.ALUControl = 4'bxxxx; // Undefined
             endcase
         end
-        `OPCODE_UJ_TYPE: begin // UJ-type JAL
-            id_ctrl.ImmSel = `IMMGEN_UJ;
+        opcode_t::OPCODE_UJ_TYPE: begin // UJ-type JAL
+            id_ctrl.ImmSel = immgen_t::IMMGEN_UJ;
             ex_ctrl.ALUSrcB = 1'bx; // doesn't matter
             wb_ctrl.MemtoReg = 2'd2; // PC + 4
 
@@ -142,8 +142,8 @@ module controller(
 
             ex_ctrl.ALUControl = 4'bxxxx; // Undefined
         end
-        `OPCODE_LUI: begin // LUI
-            id_ctrl.ImmSel = `IMMGEN_U;
+        opcode_t::OPCODE_LUI: begin // LUI
+            id_ctrl.ImmSel = immgen_t::IMMGEN_U;
             ex_ctrl.ALUSrcB = 1'bx;
             wb_ctrl.MemtoReg = 2'd3;
 
@@ -159,8 +159,8 @@ module controller(
 
             ex_ctrl.ALUControl = 4'bxxxx; // Undefined
         end
-        `OPCODE_AUIPC: begin // AUIPC
-            id_ctrl.ImmSel = `IMMGEN_U;
+        opcode_t::OPCODE_AUIPC: begin // AUIPC
+            id_ctrl.ImmSel = immgen_t::IMMGEN_U;
             ex_ctrl.ALUSrcB = 1'bx;
             wb_ctrl.MemtoReg = 2'd2;
 
@@ -177,7 +177,7 @@ module controller(
             ex_ctrl.ALUControl = 4'bxxxx; // Undefined
         end
         default: begin // should ignore, but for now, just set to undefined
-            id_ctrl.ImmSel = 3'bxxx;
+            id_ctrl.ImmSel = immgen_t'('x);
             ex_ctrl.ALUSrcB = 1'bx;
             wb_ctrl.MemtoReg = 2'bxx;
 
