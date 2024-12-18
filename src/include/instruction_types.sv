@@ -139,4 +139,12 @@ typedef enum logic [2:0] {
     WORD = fun3_load_t::FUN3_LW
 } rw_length_t;
 
+// MemtoReg
+typedef enum logic [1:0] {
+    MEMTOREG_ALU = 2'd0,
+    MEMTOREG_MEM = 2'd1,
+    MEMTOREG_PC = 2'd2,
+    MEMTOREG_IMM = 2'd3
+} memtoreg_t;
+
 `endif // FORWARDING_TYPES_SV

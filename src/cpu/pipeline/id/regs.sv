@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 // `default_nettype none
 
-`include "register_file_type.sv"
+`include "register_file_types.sv"
 
 module regs(
     input wire clk, rst,

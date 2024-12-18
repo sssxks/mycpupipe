@@ -75,4 +75,4 @@ typedef union packed {
     register_t [1:31] id;  // addressing
 } register_file_t;
 
-`endif // REGISTER_FILE_TYPE_SV
+`endif // REGISTER_FILE_TYPES_SV
