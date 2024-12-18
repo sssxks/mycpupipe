@@ -31,7 +31,6 @@ typedef struct packed{
     logic [31:0]  pc_offset;
     logic [31:0]  alu_result;
     logic [31:0]  immediate;
-    logic zero;
 
     mem_control_t mem_ctrl;
     wb_control_t  wb_ctrl;
@@ -46,6 +45,20 @@ typedef struct packed{
     
     wb_control_t  wb_ctrl;
 } mem_wb_flow_t;
+
+// ex -> if backward flow, for branching
+typedef struct packed {
+    logic PCSrc;  // 1: PC = pc_offset (branch taken),
+                  // 0: PC = PC + 4 (branch not taken)
+    logic [31:0] pc_offset;
+} ex_if_backflow_t;
+
+// wb -> id backward flow, for writing back to regfile
+typedef struct packed {
+    logic RegWrite;
+    logic [4:0] rd_addr;
+    logic [31:0] rd_data;  
+} wb_id_backflow_t;
 
 // endpackage
 

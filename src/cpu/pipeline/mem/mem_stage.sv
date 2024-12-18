@@ -1,15 +1,11 @@
 `timescale 1ns/1ps
-`default_nettype none
+// `default_nettype none
 
 `include "pipeline_flow.sv"
 
 module mem_stage (
     input ex_mem_flow_t inflow,
     output mem_wb_flow_t outflow,
-
-    // back to IF
-    output logic PCSrc,
-    output logic [31:0] pc_offset,
 
     forwarding_if.mem_stage fd,
 
@@ -24,17 +20,13 @@ module mem_stage (
 
     // decide which pc next to write to register
     assign outflow.pc_write = inflow.mem_ctrl.Jump ? inflow.pc_incr : inflow.pc_offset; // jump=1 -> jalr, jump=0 -> auipc
+    
     // forward data
     assign outflow.immediate = inflow.immediate;
     assign outflow.alu_result = inflow.alu_result;
     assign outflow.rd_addr = inflow.rd_addr;
     // forward control
     assign outflow.wb_ctrl = inflow.wb_ctrl;
-
-    assign pc_offset = inflow.pc_offset;
-    // assign PCSrc = mem_ctrl.Jump || (mem_ctrl.Branch && (mem_ctrl.InverseBranch ? ~zero : zero));
-    // simplifies to
-    assign PCSrc = inflow.mem_ctrl.Jump || (inflow.mem_ctrl.Branch & (inflow.mem_ctrl.InverseBranch ^ inflow.zero));
 
     // forwarding
     assign fd.mem.alu_result = inflow.alu_result;

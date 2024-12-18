@@ -21,8 +21,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd0; // alu result
             
             mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'bx; // doesn't matter
 
             wb_ctrl.RegWrite = 1'b1;
@@ -38,8 +38,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd0;
 
             mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'bx; // doesn't matter
 
             wb_ctrl.RegWrite = 1'b1;
@@ -55,8 +55,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd1;
 
             mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'bx; // doesn't matter
 
             wb_ctrl.RegWrite = 1'b1;
@@ -72,8 +72,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd2;
 
             mem_ctrl.Jump = 1'b1;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'b1;
 
             wb_ctrl.RegWrite = 1'b1;
@@ -89,8 +89,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd0;
 
             mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'bx; // doesn't matter
 
             wb_ctrl.RegWrite = 1'b0;
@@ -106,8 +106,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd0; // ALU result
 
             mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b1;
-            mem_ctrl.InverseBranch = fun3[0]; // NE, GE, GEU
+            ex_ctrl.Branch = 1'b1;
+            ex_ctrl.InverseBranch = fun3[0]; // NE, GE, GEU
             ex_ctrl.PCOffset = 1'b0;
 
             wb_ctrl.RegWrite = 1'b0;
@@ -131,8 +131,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd2; // PC + 4
 
             mem_ctrl.Jump = 1'b1;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'b0;
 
             wb_ctrl.RegWrite = 1'b1;
@@ -148,8 +148,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd3;
 
             mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'b0;
 
             wb_ctrl.RegWrite = 1'b1;
@@ -165,8 +165,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'd2;
 
             mem_ctrl.Jump = 1'b0;
-            mem_ctrl.Branch = 1'b0;
-            mem_ctrl.InverseBranch = 1'bx; // doesn't matter
+            ex_ctrl.Branch = 1'b0;
+            ex_ctrl.InverseBranch = 1'bx; // doesn't matter
             ex_ctrl.PCOffset = 1'b0;
 
             wb_ctrl.RegWrite = 1'b1;
@@ -182,8 +182,8 @@ module controller(
             wb_ctrl.MemtoReg = 2'bxx;
 
             mem_ctrl.Jump = 1'bx;
-            mem_ctrl.Branch = 1'bx;
-            mem_ctrl.InverseBranch = 1'bx;
+            ex_ctrl.Branch = 1'bx;
+            ex_ctrl.InverseBranch = 1'bx;
             ex_ctrl.PCOffset = 1'bx;
 
             wb_ctrl.RegWrite = 1'b0;

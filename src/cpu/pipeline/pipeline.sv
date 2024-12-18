@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`default_nettype none
+// `default_nettype none
 
 `include "pipeline_flow.sv"
 
@@ -10,20 +10,13 @@ module pipeline(
     instr_memory_if.user instr_mem_if,
     inner_memory_if.user inner_mem_if
 );
-    // forward flow
+    // flows
     if_id_flow_t if_flowout, id_flowin;
     id_ex_flow_t id_flowout, ex_flowin;
     ex_mem_flow_t ex_flowout, mem_flowin;
     mem_wb_flow_t mem_flowout, wb_flowin;
-
-    // mem -> if backward flow
-    logic PCSrc;
-    logic [31:0] pc_offset;
-    // wb -> id backward flow
-    logic RegWrite;
-    logic [4:0] rd_addr;
-    logic [31:0] rd_data;
-
+    ex_if_backflow_t ex_if_backflow;
+    wb_id_backflow_t wb_id_backflow;
 
     // forwarding
     forwarding_if fd();
@@ -42,9 +35,7 @@ module pipeline(
         .reset(reset),
         
         .outflow(if_flowout),
-
-        .PCSrc(PCSrc),
-        .pc_offset(pc_offset),
+        .backflow(ex_if_backflow),
 
         .hd(hd.if_stage),
         .instr_memory_if(instr_mem_if)
@@ -64,10 +55,7 @@ module pipeline(
 
         .inflow(id_flowin),
         .outflow(id_flowout),
-
-        .RegWrite(RegWrite),
-        .rd_addr(rd_addr),
-        .rd_data(rd_data),
+        .backflow(wb_id_backflow),
 
         .hd(hd.id_stage)
     );
@@ -83,6 +71,7 @@ module pipeline(
     ex_stage ex_stage_instance (
         .inflow(ex_flowin),
         .outflow(ex_flowout),
+        .backflow(ex_if_backflow),
 
         .fd(fd.ex_stage),
         .hd(hd.ex_stage)
@@ -100,9 +89,6 @@ module pipeline(
         .inflow(mem_flowin),
         .outflow(mem_flowout),
 
-        .PCSrc(PCSrc),
-        .pc_offset(pc_offset),
-
         .fd(fd.mem_stage),
         .mem_if(inner_mem_if)
     );
@@ -117,10 +103,7 @@ module pipeline(
 
     wb_stage wb_stage_instance (
         .inflow(wb_flowin),
-
-        .rd_addr(rd_addr),
-        .rd_data(rd_data),
-        .RegWrite(RegWrite),
+        .backflow(wb_id_backflow),
 
         .fd(fd.wb_stage)
     );

@@ -1,8 +1,9 @@
 `timescale 1ns/1ps
-`default_nettype none
+// `default_nettype none
 
 typedef struct packed {
     logic Load;
+    logic PCSrc;
     logic [4:0] rd_addr;
 } ex_hazard_input_t;
 
@@ -16,6 +17,7 @@ interface hazard_if;
     ex_hazard_input_t ex;
 
     logic Stall;
+    logic Flush;
 
     modport ex_stage (
         output ex
@@ -23,18 +25,21 @@ interface hazard_if;
 
     modport id_stage (
         output id,
-        input Stall
+        input Stall,
+        input Flush
     );
 
     modport control (
         input id,
         input ex,
 
-        output Stall
+        output Stall,
+        output Flush
     );
 
     modport if_stage (
-        input Stall
+        input Stall,
+        input Flush
     );
 
 endinterface //hazard_if

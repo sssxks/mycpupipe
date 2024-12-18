@@ -56,7 +56,8 @@ Pipeline data flows (forward flows) are grouped into structs and defined in the 
 
 ### Forward Flows
 
-1. **`if_id_flow_t`: From Instruction Fetch (IF) to Instruction Decode (ID)**
+about to change
+<!-- 1. **`if_id_flow_t`: From Instruction Fetch (IF) to Instruction Decode (ID)**
    - `logic [31:0] pc`: Program Counter.
    - `logic [31:0] instr`: Instruction fetched from memory.
 
@@ -78,19 +79,19 @@ Pipeline data flows (forward flows) are grouped into structs and defined in the 
 4. **`mem_wb_flow_t`: From Memory Access (MEM) to Write-Back (WB)**
    - Key fields in this stage include data read from memory and settings for writing back results:
      - `logic [31:0] data_in`: Data read from memory.
-     - `logic [31:0] pc_write`: Program Counter value to write back.
+     - `logic [31:0] pc_write`: Program Counter value to write back. -->
 
 ### Backward Flows
 
 Backward flows include MEM -> IF and WB -> ID.
 
-- **From Memory Access (MEM) to Instruction Fetch (IF)**
+<!-- - **From Memory Access (MEM) to Instruction Fetch (IF)**
   - `logic PCSrc`: Determines the source of the next PC value.
   - `logic [31:0] pc_offset`: Offset to add to the current PC.
 - **From Write-Back (WB) to Instruction Decode (ID)**
   - `logic RegWrite`: Enables register write-back.
   - `logic [4:0] rd_addr`: Destination register address.
-  - `logic [31:0] rd_data`: Data to write back.
+  - `logic [31:0] rd_data`: Data to write back. -->
 
 ## Control Signals
 
@@ -98,25 +99,25 @@ Control signals are defined in the `control_signals.sv` file and are organized b
 
 ### Instruction Decode (ID)
 
-- `logic [2:0] ImmSel`: Immediate generator selection.
-  - Determines the type of immediate (e.g., I-type, S-type, SB-type, UJ-type).
+<!-- - `logic [2:0] ImmSel`: Immediate generator selection.
+  - Determines the type of immediate (e.g., I-type, S-type, SB-type, UJ-type). -->
 
 ### Execute (EX)
 
-- `logic [3:0] ALUControl`: Operation code for the ALU.
-- `logic ALUSrcB`: Determines ALU source operand (register or immediate).
+<!-- - `logic [3:0] ALUControl`: Operation code for the ALU.
+- `logic ALUSrcB`: Determines ALU source operand (register or immediate). -->
 
 ### Memory Access (MEM)
 
-- `logic MemRW`: Control signal for memory read/write operations.
+<!-- - `logic MemRW`: Control signal for memory read/write operations.
 - `logic [2:0] RWType`: Determines the type of access (e.g., byte, half-word).
 - `logic Branch`, `logic Jump`: Signals for conditional/unconditional branches.
-- `logic InverseBranch`: Optional inversion for branch conditions.
+- `logic InverseBranch`: Optional inversion for branch conditions. -->
 
 ### Write-Back (WB)
 
-- `logic [1:0] MemtoReg`: Determines the data to write back (e.g., ALU result, memory data).
-- `logic RegWrite`: Enables register write-back.
+<!-- - `logic [1:0] MemtoReg`: Determines the data to write back (e.g., ALU result, memory data).
+- `logic RegWrite`: Enables register write-back. -->
 
 ## Memory Access Support
 

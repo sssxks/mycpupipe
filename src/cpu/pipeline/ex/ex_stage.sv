@@ -1,11 +1,12 @@
 `timescale 1ns/1ps
-`default_nettype none
+// `default_nettype none
 `include "pipeline_flow.sv"
 `include "forwarding_types.sv"
 
 module ex_stage (
     input id_ex_flow_t inflow,
     output ex_mem_flow_t outflow,
+    output ex_if_backflow_t backflow,
 
     forwarding_if.ex_stage fd,
     hazard_if.ex_stage hd
@@ -29,19 +30,26 @@ module ex_stage (
     end
 
     assign hd.ex.Load = inflow.wb_ctrl.MemtoReg == 2'd1;
+    assign hd.ex.PCSrc = backflow.PCSrc;
     assign hd.ex.rd_addr = inflow.rd_addr;
 
+    logic zero;
     alu alu_instance (
         .a(a),
         .b(b),
         .op(inflow.ex_ctrl.ALUControl),
         .result(outflow.alu_result),
-        .zero(outflow.zero)
+        .zero(zero)
     );
 
-    assign outflow.pc_incr = inflow.pc + 32'd4;
-    assign outflow.pc_offset = inflow.ex_ctrl.PCOffset ?
+    assign backflow.pc_offset = inflow.ex_ctrl.PCOffset ?
     outflow.alu_result : inflow.pc + inflow.immediate; // for jalr
+    // assign PCSrc = mem_ctrl.Jump || (mem_ctrl.Branch && (mem_ctrl.InverseBranch ? ~zero : zero));
+    // simplifies to
+    assign backflow.PCSrc = inflow.mem_ctrl.Jump || (inflow.ex_ctrl.Branch & (inflow.ex_ctrl.InverseBranch ^ zero));
+
+    assign outflow.pc_incr = inflow.pc + 32'd4;
+    assign outflow.pc_offset = backflow.pc_offset;
 
     // forward data
     assign outflow.immediate = inflow.immediate;

@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`default_nettype none
+// `default_nettype none
 
 `include "control_signals.sv"
 `include "pipeline_flow.sv"
@@ -10,11 +10,7 @@ module id_stage (
 
     input if_id_flow_t inflow,
     output id_ex_flow_t outflow,
-
-    // from wb
-    input logic        RegWrite,
-    input logic [4:0]  rd_addr,
-    input logic [31:0] rd_data,
+    input wb_id_backflow_t backflow,
 
     hazard_if.id_stage hd
 );
@@ -51,11 +47,11 @@ module id_stage (
         .clk(clk),
         .rst(reset),
 
-        .reg_write(RegWrite),
+        .reg_write(backflow.RegWrite),
         .rs1_addr(outflow.rs1_addr),
         .rs2_addr(outflow.rs2_addr),
-        .wt_addr(rd_addr),
-        .wt_data(rd_data),
+        .wt_addr(backflow.rd_addr),
+        .wt_data(backflow.rd_data),
         .rs1_data(outflow.rs1_data),
         .rs2_data(outflow.rs2_data)
     );
@@ -64,7 +60,7 @@ module id_stage (
     assign hd.id.rs2_addr = outflow.rs2_addr;
 
     always_comb begin
-        if (hd.Stall) begin
+        if (hd.Stall || hd.Flush) begin
             outflow.ex_ctrl = NOP_EX_CTRL;
             outflow.mem_ctrl = NOP_MEM_CTRL;
             outflow.wb_ctrl = NOP_WB_CTRL;
