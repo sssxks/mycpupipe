@@ -1,5 +1,5 @@
-`ifndef DEFINITIONS_SV
-`define DEFINITIONS_SV
+`ifndef INSTRUCTION_TYPES_SV
+`define INSTRUCTION_TYPES_SV
 
 // DEFINITIONS for RV32I
 
@@ -139,4 +139,4 @@ typedef enum logic [2:0] {
     WORD = fun3_load_t::FUN3_LW
 } rw_length_t;
 
-`endif // DEFINITIONS_SV
+`endif // FORWARDING_TYPES_SV

@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 // `default_nettype none
 
-`include "pipeline_flow.sv"
+`include "pipeline_flow_types.sv"
 
 module pipeline(
     input logic clk,
@@ -18,13 +18,13 @@ module pipeline(
     ex_if_backflow_t ex_if_backflow;
     wb_id_backflow_t wb_id_backflow;
 
-    // forwarding
+    // forwarding unit
     forwarding_if fd();
     forwarding_unit forwarding_instance(
         .c(fd.control)
     );
 
-    // hazard
+    // hazard detection unit
     hazard_if hd();
     hazard_unit hazard_instance(
         .c(hd.control)
@@ -36,8 +36,8 @@ module pipeline(
         
         .outflow(if_flowout),
         .backflow(ex_if_backflow),
-
         .hd(hd.if_stage),
+
         .instr_memory_if(instr_mem_if)
     );
 
@@ -56,7 +56,6 @@ module pipeline(
         .inflow(id_flowin),
         .outflow(id_flowout),
         .backflow(wb_id_backflow),
-
         .hd(hd.id_stage)
     );
 
@@ -72,7 +71,6 @@ module pipeline(
         .inflow(ex_flowin),
         .outflow(ex_flowout),
         .backflow(ex_if_backflow),
-
         .fd(fd.ex_stage),
         .hd(hd.ex_stage)
     );
@@ -88,8 +86,8 @@ module pipeline(
     mem_stage mem_stage_instance (
         .inflow(mem_flowin),
         .outflow(mem_flowout),
-
         .fd(fd.mem_stage),
+
         .mem_if(inner_mem_if)
     );
 
@@ -104,7 +102,6 @@ module pipeline(
     wb_stage wb_stage_instance (
         .inflow(wb_flowin),
         .backflow(wb_id_backflow),
-
         .fd(fd.wb_stage)
     );
 endmodule

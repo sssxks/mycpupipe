@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "definitions.sv"
+`include "instruction_types.sv"
 
 // this is behavioral model of ALU
 // not very efficient, but easy to maintain

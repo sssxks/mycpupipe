@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "definitions.sv"
+`include "instruction_types.sv"
 
 // providing half, byte length and sign extension
 module memory_handler (

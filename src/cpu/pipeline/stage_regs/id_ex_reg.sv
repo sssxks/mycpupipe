@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 // `default_nettype none
 
-`include "pipeline_flow.sv"
+`include "pipeline_flow_types.sv"
 
 module id_ex_reg (
     input logic clk,

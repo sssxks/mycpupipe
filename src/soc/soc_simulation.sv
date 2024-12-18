@@ -1,5 +1,4 @@
-`include "definitions.sv"
-// `include "debug.vh"
+`include "instruction_types.sv"
 
 module soc_simulation(
     input wire clk,

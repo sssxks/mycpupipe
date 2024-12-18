@@ -1,5 +1,5 @@
-`ifndef REGISTER_FILE_TYPE_SV
-`define REGISTER_FILE_TYPE_SV
+`ifndef REGISTER_FILE_TYPES_SV
+`define REGISTER_FILE_TYPES_SV
 
 typedef logic [31:0] register_t;
 

@@ -1,7 +1,7 @@
-`ifndef PIPELINE_FLOW_SV
-`define PIPELINE_FLOW_SV
+`ifndef PIPELINE_FLOW_TYPES_SV
+`define PIPELINE_FLOW_TYPES_SV
 
-`include "control_signals.sv"
+`include "control_signal_types.sv"
 
 // package pipeline_flow;
 
@@ -62,4 +62,4 @@ typedef struct packed {
 
 // endpackage
 
-`endif // PIPELINE_FLOW_SV
+`endif // PIPELINE_FLOW_TYPES_SV

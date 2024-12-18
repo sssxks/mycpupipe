@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 // `default_nettype none
-`include "pipeline_flow.sv"
+`include "pipeline_flow_types.sv"
 `include "forwarding_types.sv"
 
 module ex_stage (
@@ -11,9 +11,11 @@ module ex_stage (
     forwarding_if.ex_stage fd,
     hazard_if.ex_stage hd
 );
+    // tell forwarding unit which register used
     assign fd.ex.rs1_addr = inflow.rs1_addr;
     assign fd.ex.rs2_addr = inflow.rs2_addr;
     
+    // forwarding unit gives us fresh data
     logic [31:0] a, b;
     always_comb begin
         case (fd.a)
@@ -29,10 +31,7 @@ module ex_stage (
         endcase
     end
 
-    assign hd.ex.Load = inflow.wb_ctrl.MemtoReg == 2'd1;
-    assign hd.ex.PCSrc = backflow.PCSrc;
-    assign hd.ex.rd_addr = inflow.rd_addr;
-
+    // feed the data to ALU, result passed to next stage
     logic zero;
     alu alu_instance (
         .a(a),
@@ -42,20 +41,26 @@ module ex_stage (
         .zero(zero)
     );
 
+    // now we works on branching, first pass branched PC and signal back to if
     assign backflow.pc_offset = inflow.ex_ctrl.PCOffset ?
-    outflow.alu_result : inflow.pc + inflow.immediate; // for jalr
-    // assign PCSrc = mem_ctrl.Jump || (mem_ctrl.Branch && (mem_ctrl.InverseBranch ? ~zero : zero));
-    // simplifies to
-    assign backflow.PCSrc = inflow.mem_ctrl.Jump || (inflow.ex_ctrl.Branch & (inflow.ex_ctrl.InverseBranch ^ zero));
+        outflow.alu_result : inflow.pc + inflow.immediate; // for jalr
+    assign backflow.PCSrc = inflow.mem_ctrl.Jump || 
+        (inflow.ex_ctrl.Branch & (inflow.ex_ctrl.InverseBranch ^ zero));
 
+    // hazard detection unit needs these signals
+    assign hd.ex.Load = inflow.wb_ctrl.MemtoReg == 2'd1; // if we are about to load
+    assign hd.ex.rd_addr = inflow.rd_addr;
+    assign hd.ex.PCSrc = backflow.PCSrc; // if we are about to jump
+
+    // then pass pc calculation result to next stage
     assign outflow.pc_incr = inflow.pc + 32'd4;
     assign outflow.pc_offset = backflow.pc_offset;
 
-    // forward data
+    // pass rest of data
     assign outflow.immediate = inflow.immediate;
     assign outflow.rs2_data = inflow.rs2_data;
     assign outflow.rd_addr = inflow.rd_addr;
-    // forward control
+    // pass rest of control signals
     assign outflow.mem_ctrl = inflow.mem_ctrl;
     assign outflow.wb_ctrl = inflow.wb_ctrl;
 endmodule

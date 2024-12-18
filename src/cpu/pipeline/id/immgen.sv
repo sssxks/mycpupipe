@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 // `default_nettype none
 
-`include "definitions.sv"
+`include "instruction_types.sv"
 
 module immgen(
     input wire immgen_t ImmSel,

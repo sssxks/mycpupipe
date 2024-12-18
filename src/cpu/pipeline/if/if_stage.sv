@@ -24,7 +24,7 @@ module if_stage (
     // communicate with instruction memory
     assign instr_memory_if.pc = outflow.pc;
 
-    // handle flush
+    // if flush given, we discard the instruction just fetched
     always_comb begin
         if (hd.Flush) begin
             outflow.instr = 32'h00000013; // nop

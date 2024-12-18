@@ -1,5 +1,5 @@
-`ifndef CONTROL_SIGNALS_SV
-`define CONTROL_SIGNALS_SV
+`ifndef CONTROL_SIGNAL_TYPES_SV
+`define CONTROL_SIGNAL_TYPES_SV
 
 // package control_signals;
 // notice xx_control_t can be used in all stage prior xx stage, not only xx stage
@@ -40,4 +40,4 @@ const wb_control_t NOP_WB_CTRL = '{MemtoReg: 2'b00, RegWrite: 1'b0};
 
 // endpackage
 
-`endif // CONTROL_SIGNALS_SV
+`endif // CONTROL_SIGNAL_TYPES_SV

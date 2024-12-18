@@ -1,17 +1,17 @@
 `timescale 1ns/1ps
-`include "definitions.sv"
-`include "control_signals.sv"
+`include "instruction_types.sv"
+`include "control_signal_types.sv"
 
 module controller(    
     // from instruction
-    input wire opcode_t opcode, // instruction[6:2]
-    input wire [2:0] fun3, // instruction[12:14]
-    input wire fun7, // instruction[30]
+    input wire opcode_t  opcode, // instruction[6:2]
+    input wire [2:0]     fun3, // instruction[12:14]
+    input wire           fun7, // instruction[30]
 
-    output id_control_t id_ctrl,
-    output ex_control_t ex_ctrl,
+    output id_control_t  id_ctrl,
+    output ex_control_t  ex_ctrl,
     output mem_control_t mem_ctrl,
-    output wb_control_t wb_ctrl
+    output wb_control_t  wb_ctrl
 );
     always_comb begin
         case (opcode)
