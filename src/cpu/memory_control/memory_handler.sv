@@ -10,7 +10,7 @@ module memory_handler (
     wire [1:0] where = cpu.addr_out[1:0]; // word offset
 
     always_comb begin
-        if (cpu.MemRW == 1'b0) begin // read
+        if (cpu.MemRW == MEM_READ) begin
             case (cpu.RWType)
                 BYTE: cpu.data_in = {
                     {24{mem.data_in[{where, 3'b0}]}},
@@ -33,7 +33,7 @@ module memory_handler (
             endcase
             mem.data_out = 32'b0;
             mem.WriteEnable = 4'b0;
-        end else begin // write
+        end else begin // MEM_WRITE
             case (cpu.RWType)
                 BYTE: begin // sb
                     mem.data_out = {4{cpu.data_out[7:0]}};

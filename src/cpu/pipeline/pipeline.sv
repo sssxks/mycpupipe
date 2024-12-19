@@ -18,13 +18,13 @@ module pipeline(
     ex_if_backflow_t ex_if_backflow;
     wb_id_backflow_t wb_id_backflow;
 
-    // forwarding unit
+    // forwarding interface & unit
     forwarding_if fd();
     forwarding_unit forwarding_instance(
         .c(fd.control)
     );
 
-    // hazard detection unit
+    // hazard detection interface & unit
     hazard_if hd();
     hazard_unit hazard_instance(
         .c(hd.control)

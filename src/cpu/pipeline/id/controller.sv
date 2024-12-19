@@ -3,10 +3,9 @@
 `include "control_signal_types.sv"
 
 module controller(    
-    // from instruction
-    input wire opcode_t  opcode, // instruction[6:2]
-    input wire [2:0]     fun3, // instruction[12:14]
-    input wire           fun7, // instruction[30]
+    input wire opcode_t  opcode,
+    input wire [2:0]     fun3,
+    input wire           fun7, 
 
     output id_control_t  id_ctrl,
     output ex_control_t  ex_ctrl,
@@ -41,7 +40,7 @@ module controller(
             wb_ctrl.MemtoReg = MEMTOREG_MEM;
             wb_ctrl.RegWrite = REG_WRITE;
             mem_ctrl.MemRW = MEM_READ;
-            mem_ctrl.RWType = rw_length_t'(fun3);
+            mem_ctrl.RWType = rw_type_t'(fun3);
             ex_ctrl.ALUControl = ALU_ADD;
         end
         OPCODE_JALR: begin
@@ -59,7 +58,7 @@ module controller(
             ex_ctrl.ALUSrcB = ALU_IMM;
             wb_ctrl.RegWrite = NO_REG_WRITE;
             mem_ctrl.MemRW = MEM_WRITE;
-            mem_ctrl.RWType = rw_length_t'(fun3);
+            mem_ctrl.RWType = rw_type_t'(fun3);
             ex_ctrl.ALUControl = ALU_ADD;
         end
         OPCODE_SB_TYPE: begin

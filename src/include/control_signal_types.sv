@@ -40,7 +40,7 @@ typedef enum logic [2:0] {
     HALF = FUN3_LH,
     HALF_U = FUN3_LHU,
     WORD = FUN3_LW
-} rw_length_t;
+} rw_type_t;
 
 typedef enum logic [1:0] {
     MEMTOREG_ALU = 2'd0,  // alu result (R-type)
@@ -60,14 +60,12 @@ typedef enum logic {
     BRANCH_NO = 1'b0  // not a branch instruction
 } branch_t;
 
-// 1: , 0: normal branch condition
 // only valid when Branch=1
 typedef enum logic {
     INVERSE_BRANCH = 1'b1,  // bne, bge, bgeu
     NORMAL_BRANCH = 1'b0    // beq, blt, bltu
 } inversebranch_t;
 
-// MemRW
 typedef enum logic {
     MEM_WRITE = 1'b1,  // write to memory
     MEM_READ = 1'b0    // read from memory
@@ -108,7 +106,7 @@ typedef struct packed{
 
 typedef struct packed{
     memrw_t MemRW;
-    rw_length_t RWType;
+    rw_type_t RWType;
 
     jump_t Jump; // mainly used in ex stage, but mem stage also need it
 } mem_control_t;

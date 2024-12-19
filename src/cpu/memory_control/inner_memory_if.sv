@@ -1,6 +1,8 @@
+`include "control_signal_types.sv"
+
 interface inner_memory_if;
-    logic MemRW;
-    logic [2:0] RWType; // FUN3 of load/store instruction
+    memrw_t MemRW;
+    rw_type_t RWType;
     logic [31:0] addr_out;
     logic [31:0] data_out;
     logic [31:0] data_in;

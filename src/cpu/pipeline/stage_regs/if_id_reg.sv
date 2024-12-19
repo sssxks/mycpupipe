@@ -11,7 +11,6 @@ module if_id_reg (
     input if_id_flow_t if_flow,
     output if_id_flow_t id_flow    
 );
-
     always_ff @(posedge clk or posedge reset) begin
         // if we need to flush, discard the instruction just fetched
         if (reset || hd.Flush) begin
