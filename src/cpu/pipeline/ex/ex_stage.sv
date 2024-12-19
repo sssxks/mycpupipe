@@ -16,30 +16,32 @@ module ex_stage (
     assign fd.ex.rs2_addr = inflow.rs2_addr;
     
     // forwarding unit gives us fresh data
-    logic [31:0] a, b;
+    logic [31:0] fd_rs1_data, fd_rs2_data;
     always_comb begin
-        case (fd.a)
-            FORWARD_MEM: a = fd.data.mem;
-            FORWARD_WB: a = fd.data.wb;
-            default: a = inflow.rs1_data;
+        case (fd.rs1)
+            FORWARD_MEM: fd_rs1_data = fd.data.mem;
+            FORWARD_WB: fd_rs1_data = fd.data.wb;
+            default: fd_rs1_data = inflow.rs1_data;
         endcase
-        case (fd.b)
-            FORWARD_MEM: b = fd.data.mem;
-            FORWARD_WB: b = fd.data.wb;
-            default: b = inflow.ex_ctrl.ALUSrcB ?
-           inflow.immediate : inflow.rs2_data;
+
+        case (fd.rs2)
+            FORWARD_MEM: fd_rs2_data = fd.data.mem;
+            FORWARD_WB: fd_rs2_data = fd.data.wb;
+            default: fd_rs2_data = inflow.rs2_data;
         endcase
     end
 
     // feed the data to ALU, result passed to next stage
     logic zero;
     alu alu_instance (
-        .a(a),
-        .b(b),
+        .a(fd_rs1_data),
+        .b(inflow.ex_ctrl.ALUSrcB ? inflow.immediate : fd_rs2_data),
         .op(inflow.ex_ctrl.ALUControl),
         .result(outflow.alu_result),
         .zero(zero)
     );
+    // feed the data to memory stage
+    assign outflow.rs2_data = fd_rs2_data;
 
     // now we works on branching, first pass branched PC and signal back to if
     assign backflow.pc_offset = inflow.ex_ctrl.PCOffset ?
@@ -48,7 +50,8 @@ module ex_stage (
         (inflow.ex_ctrl.Branch & (inflow.ex_ctrl.InverseBranch ^ zero));
 
     // hazard detection unit needs these signals
-    assign hd.ex.Load = inflow.wb_ctrl.MemtoReg == MEMTOREG_MEM; // if we are about to load
+    assign hd.ex.Load = inflow.wb_ctrl.RegWrite // if we are about to load
+        && inflow.wb_ctrl.MemtoReg == MEMTOREG_MEM; 
     assign hd.ex.rd_addr = inflow.rd_addr;
     assign hd.ex.PCSrc = backflow.PCSrc; // if we are about to jump
 
@@ -58,7 +61,6 @@ module ex_stage (
 
     // pass rest of data
     assign outflow.immediate = inflow.immediate;
-    assign outflow.rs2_data = inflow.rs2_data;
     assign outflow.rd_addr = inflow.rd_addr;
     // pass rest of control signals
     assign outflow.mem_ctrl = inflow.mem_ctrl;

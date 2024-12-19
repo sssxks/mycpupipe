@@ -7,8 +7,8 @@ interface forwarding_if;
     ex_forwarding_input_t ex;
 
     forwarding_data_output_t data;
-    forwarding_t a;
-    forwarding_t b;
+    forwarding_t rs1;
+    forwarding_t rs2;
 
     modport mem_stage (
         output mem
@@ -24,16 +24,16 @@ interface forwarding_if;
         input wb,
 
         output data,
-        output a,
-        output b
+        output rs1,
+        output rs2
     );
 
     modport ex_stage (
         output ex,
 
         input data,
-        input a,
-        input b
+        input rs1,
+        input rs2
     );
 
 endinterface //forwarding_if
