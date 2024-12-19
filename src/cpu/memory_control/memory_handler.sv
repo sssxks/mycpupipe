@@ -12,38 +12,38 @@ module memory_handler (
     always_comb begin
         if (cpu.MemRW == 1'b0) begin // read
             case (cpu.RWType)
-                rw_length_t::BYTE: cpu.data_in = {
+                BYTE: cpu.data_in = {
                     {24{mem.data_in[{where, 3'b0}]}},
                     mem.data_in[{where, 3'b0} +: 8]
                 };
-                rw_length_t::BYTE_U: cpu.data_in = {
+                BYTE_U: cpu.data_in = {
                     24'b0,
                     mem.data_in[{where, 3'b0} +: 8]
                 };
-                rw_length_t::HALF: cpu.data_in = {
+                HALF: cpu.data_in = {
                     {16{mem.data_in[{where[1], 4'b0}]}},
                     mem.data_in[{where[1], 4'b0} +: 16]
                 };
-                rw_length_t::HALF_U: cpu.data_in = {
+                HALF_U: cpu.data_in = {
                     16'b0, 
                     mem.data_in[{where[1], 4'b0} +: 16]
                 };
-                rw_length_t::WORD: cpu.data_in = mem.data_in;
+                WORD: cpu.data_in = mem.data_in;
                 default: cpu.data_in = 32'bx;
             endcase
             mem.data_out = 32'b0;
             mem.WriteEnable = 4'b0;
         end else begin // write
             case (cpu.RWType)
-                rw_length_t::BYTE: begin // sb
+                BYTE: begin // sb
                     mem.data_out = {4{cpu.data_out[7:0]}};
                     mem.WriteEnable = 4'b0001 << where;
                 end
-                rw_length_t::HALF: begin // sh
+                HALF: begin // sh
                     mem.data_out = {2{cpu.data_out[15:0]}};
                     mem.WriteEnable = 4'b0011 << where;
                 end
-                rw_length_t::WORD: begin // sw
+                WORD: begin // sw
                     mem.data_out = cpu.data_out;
                     mem.WriteEnable = 4'b1111;
                 end

@@ -30,18 +30,6 @@ typedef enum logic [2:0] {
     FUN3_AND = 3'b111
 } fun3_t;
 
-// Use localparam for overlapping values
-localparam logic FUN7_ADD = 1'b0;
-localparam logic FUN7_SUB = 1'b1;
-localparam logic FUN7_SLL = 1'b0;
-localparam logic FUN7_SLT = 1'b0;
-localparam logic FUN7_SLTU = 1'b0;
-localparam logic FUN7_XOR = 1'b0;
-localparam logic FUN7_SRL = 1'b0;
-localparam logic FUN7_SRA = 1'b1;
-localparam logic FUN7_OR = 1'b0;
-localparam logic FUN7_AND = 1'b0;
-
 typedef enum logic [3:0] {
     FUN_ADD = 4'b0_000,
     FUN_SUB = 4'b1_000,
@@ -100,51 +88,6 @@ typedef enum logic [11:0] {
     FUN12_WFI = 12'b0001000_00101
 } fun12_system_t;
 
-// alu control
-typedef enum logic [3:0] {
-    ALU_ADD = 4'b0_000,
-    ALU_SUB = 4'b1_000,
-    ALU_SLL = 4'b0_001,
-    ALU_SLT = 4'b0_010,
-    ALU_SLTU = 4'b0_011,
-    ALU_XOR = 4'b0_100,
-    ALU_SRL = 4'b0_101,
-    ALU_SRA = 4'b1_101,
-    ALU_OR = 4'b0_110,
-    ALU_AND = 4'b0_111
-} alu_t;
-
-localparam logic [3:0] ALU_EQ = alu_t::ALU_SUB;
-localparam logic [3:0] ALU_NE = alu_t::ALU_SUB;
-localparam logic [3:0] ALU_LT = alu_t::ALU_SLT;
-localparam logic [3:0] ALU_GE = alu_t::ALU_SLT;
-localparam logic [3:0] ALU_LTU = alu_t::ALU_SLTU;
-localparam logic [3:0] ALU_GEU = alu_t::ALU_SLTU;
-
-// immgen
-typedef enum logic [2:0] {
-    IMMGEN_I = 3'b000,
-    IMMGEN_S = 3'b001,
-    IMMGEN_SB = 3'b010,
-    IMMGEN_UJ = 3'b011,
-    IMMGEN_U = 3'b100
-} immgen_t;
-
-// RW length and sign, same as fun3 for load/store
-typedef enum logic [2:0] {
-    BYTE = fun3_load_t::FUN3_LB,
-    BYTE_U = fun3_load_t::FUN3_LBU,
-    HALF = fun3_load_t::FUN3_LH,
-    HALF_U = fun3_load_t::FUN3_LHU,
-    WORD = fun3_load_t::FUN3_LW
-} rw_length_t;
-
-// MemtoReg
-typedef enum logic [1:0] {
-    MEMTOREG_ALU = 2'd0,
-    MEMTOREG_MEM = 2'd1,
-    MEMTOREG_PC = 2'd2,
-    MEMTOREG_IMM = 2'd3
-} memtoreg_t;
+const logic [31:0] NOP_INSTR = 32'h00000013;
 
 `endif // FORWARDING_TYPES_SV

@@ -14,99 +14,92 @@ module controller(
     output wb_control_t  wb_ctrl
 );
     always_comb begin
-        id_ctrl.ImmSel = immgen_t'('x);
-        ex_ctrl.ALUSrcB = 1'bx;
-        wb_ctrl.MemtoReg = memtoreg_t'('x);
-        mem_ctrl.Jump = 1'b0;
-        ex_ctrl.Branch = 1'b0;
-        ex_ctrl.InverseBranch = 1'bx;
-        ex_ctrl.PCOffset = 1'bx;
-        wb_ctrl.RegWrite = 1'b0;
-        mem_ctrl.MemRW = 1'bx;
-        mem_ctrl.RWType = 3'b000;
-        ex_ctrl.ALUControl = 4'bxxxx;
+        id_ctrl = NOP_ID_CTRL;
+        ex_ctrl = NOP_EX_CTRL;
+        mem_ctrl = NOP_MEM_CTRL;
+        wb_ctrl = NOP_WB_CTRL;
 
         case (opcode)
-        opcode_t::OPCODE_R_TYPE: begin
-            ex_ctrl.ALUSrcB = 1'b0; // rs2
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_ALU; // alu result
-            wb_ctrl.RegWrite = 1'b1;
-            mem_ctrl.MemRW = 1'b0;
-            ex_ctrl.ALUControl = {fun7, fun3};
+        OPCODE_R_TYPE: begin
+            ex_ctrl.ALUSrcB = ALU_RS2;
+            wb_ctrl.MemtoReg = MEMTOREG_ALU;
+            wb_ctrl.RegWrite = REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
+            ex_ctrl.ALUControl = alu_t'({fun7, fun3});
         end
-        opcode_t::OPCODE_IMMEDIATE_CALCULATION: begin
-            id_ctrl.ImmSel = immgen_t::IMMGEN_I;
-            ex_ctrl.ALUSrcB = 1'b1; // immediate
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_ALU; // alu result
-            wb_ctrl.RegWrite = 1'b1;
-            mem_ctrl.MemRW = 1'b0;
-            ex_ctrl.ALUControl = {fun3 == fun3_t::FUN3_SR ? fun7 : 1'b0, fun3};
+        OPCODE_IMMEDIATE_CALCULATION: begin
+            id_ctrl.ImmSel = IMMGEN_I;
+            ex_ctrl.ALUSrcB = ALU_IMM;
+            wb_ctrl.MemtoReg = MEMTOREG_ALU;
+            wb_ctrl.RegWrite = REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
+            ex_ctrl.ALUControl = alu_t'({fun3 == FUN3_SR ? fun7 : 1'b0, fun3});
         end
-        opcode_t::OPCODE_LOAD: begin
-            id_ctrl.ImmSel = immgen_t::IMMGEN_I;
-            ex_ctrl.ALUSrcB = 1'b1;
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_MEM;
-            wb_ctrl.RegWrite = 1'b1;
-            mem_ctrl.MemRW = 1'b0;
-            mem_ctrl.RWType = fun3;
-            ex_ctrl.ALUControl = alu_t::ALU_ADD;
+        OPCODE_LOAD: begin
+            id_ctrl.ImmSel = IMMGEN_I;
+            ex_ctrl.ALUSrcB = ALU_IMM;
+            wb_ctrl.MemtoReg = MEMTOREG_MEM;
+            wb_ctrl.RegWrite = REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
+            mem_ctrl.RWType = rw_length_t'(fun3);
+            ex_ctrl.ALUControl = ALU_ADD;
         end
-        opcode_t::OPCODE_JALR: begin
-            id_ctrl.ImmSel = immgen_t::IMMGEN_I; // i type
-            ex_ctrl.ALUSrcB = 1'b1;
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_PC;
-            mem_ctrl.Jump = 1'b1;
-            ex_ctrl.PCOffset = 1'b1;
-            wb_ctrl.RegWrite = 1'b1;
-            mem_ctrl.MemRW = 1'b0;
-            ex_ctrl.ALUControl = alu_t::ALU_ADD; // ADD
+        OPCODE_JALR: begin
+            id_ctrl.ImmSel = IMMGEN_I;
+            ex_ctrl.ALUSrcB = ALU_IMM;
+            wb_ctrl.MemtoReg = MEMTOREG_PC;
+            mem_ctrl.Jump = JUMP;
+            ex_ctrl.PCOffset = OFFSET_PC;
+            wb_ctrl.RegWrite = REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
+            ex_ctrl.ALUControl = ALU_ADD;
         end
-        opcode_t::OPCODE_S_TYPE: begin
-            id_ctrl.ImmSel = immgen_t::IMMGEN_S;
-            ex_ctrl.ALUSrcB = 1'b1;
-            wb_ctrl.RegWrite = 1'b0;
-            mem_ctrl.MemRW = 1'b1;
-            mem_ctrl.RWType = fun3;
-            ex_ctrl.ALUControl = alu_t::ALU_ADD; // ADD
+        OPCODE_S_TYPE: begin
+            id_ctrl.ImmSel = IMMGEN_S;
+            ex_ctrl.ALUSrcB = ALU_IMM;
+            wb_ctrl.RegWrite = NO_REG_WRITE;
+            mem_ctrl.MemRW = MEM_WRITE;
+            mem_ctrl.RWType = rw_length_t'(fun3);
+            ex_ctrl.ALUControl = ALU_ADD;
         end
-        opcode_t::OPCODE_SB_TYPE: begin // SB-type branch
-            id_ctrl.ImmSel = immgen_t::IMMGEN_SB;
-            ex_ctrl.ALUSrcB = 1'b0;
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_ALU;
-            ex_ctrl.Branch = 1'b1;
-            ex_ctrl.InverseBranch = fun3[0]; // NE, GE, GEU
-            ex_ctrl.PCOffset = 1'b0;
-            wb_ctrl.RegWrite = 1'b0;
-            mem_ctrl.MemRW = 1'b0;
+        OPCODE_SB_TYPE: begin
+            id_ctrl.ImmSel = IMMGEN_SB;
+            ex_ctrl.ALUSrcB = ALU_RS2;
+            wb_ctrl.MemtoReg = MEMTOREG_ALU;
+            ex_ctrl.Branch = BRANCH_IS;
+            ex_ctrl.InverseBranch = inversebranch_t'(fun3[0]); // NE, GE, GEU
+            ex_ctrl.PCOffset = OFFSET_IMM;
+            wb_ctrl.RegWrite = NO_REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
             case (fun3)
-                fun3_branch_t::FUN3_BEQ: ex_ctrl.ALUControl = ALU_EQ;
-                fun3_branch_t::FUN3_BNE: ex_ctrl.ALUControl = ALU_NE;
-                fun3_branch_t::FUN3_BLT: ex_ctrl.ALUControl = ALU_LT;
-                fun3_branch_t::FUN3_BGE: ex_ctrl.ALUControl = ALU_GE;
-                fun3_branch_t::FUN3_BLTU: ex_ctrl.ALUControl = ALU_LTU;
-                fun3_branch_t::FUN3_BGEU: ex_ctrl.ALUControl = ALU_GEU;
-                default: ex_ctrl.ALUControl = 4'bxxxx; // Undefined
+                FUN3_BEQ: ex_ctrl.ALUControl = ALU_EQ;
+                FUN3_BNE: ex_ctrl.ALUControl = ALU_NE;
+                FUN3_BLT: ex_ctrl.ALUControl = ALU_LT;
+                FUN3_BGE: ex_ctrl.ALUControl = ALU_GE;
+                FUN3_BLTU: ex_ctrl.ALUControl = ALU_LTU;
+                FUN3_BGEU: ex_ctrl.ALUControl = ALU_GEU;
+                default: ex_ctrl.ALUControl = alu_t'('x);
             endcase
         end
-        opcode_t::OPCODE_UJ_TYPE: begin // UJ-type JAL
-            id_ctrl.ImmSel = immgen_t::IMMGEN_UJ;
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_PC; // PC + 4
-            mem_ctrl.Jump = 1'b1;
-            ex_ctrl.PCOffset = 1'b0;
-            wb_ctrl.RegWrite = 1'b1;
-            mem_ctrl.MemRW = 1'b0;
+        OPCODE_UJ_TYPE: begin
+            id_ctrl.ImmSel = IMMGEN_UJ;
+            wb_ctrl.MemtoReg = MEMTOREG_PC; // PC + 4
+            mem_ctrl.Jump = JUMP;
+            ex_ctrl.PCOffset = OFFSET_IMM;
+            wb_ctrl.RegWrite = REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
         end
-        opcode_t::OPCODE_LUI: begin // LUI
-            id_ctrl.ImmSel = immgen_t::IMMGEN_U;
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_IMM;
-            wb_ctrl.RegWrite = 1'b1;
-            mem_ctrl.MemRW = 1'b0;
+        OPCODE_LUI: begin
+            id_ctrl.ImmSel = IMMGEN_U;
+            wb_ctrl.MemtoReg = MEMTOREG_IMM;
+            wb_ctrl.RegWrite = REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
         end
-        opcode_t::OPCODE_AUIPC: begin // AUIPC
-            id_ctrl.ImmSel = immgen_t::IMMGEN_U;
-            wb_ctrl.MemtoReg = memtoreg_t::MEMTOREG_PC; // PC + imm
-            wb_ctrl.RegWrite = 1'b1;
-            mem_ctrl.MemRW = 1'b0;
+        OPCODE_AUIPC: begin
+            id_ctrl.ImmSel = IMMGEN_U;
+            wb_ctrl.MemtoReg = MEMTOREG_PC; // PC + imm
+            wb_ctrl.RegWrite = REG_WRITE;
+            mem_ctrl.MemRW = MEM_READ;
         end
         endcase
     end

@@ -12,7 +12,7 @@ module mem_wb_reg (
 );
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
-            wb_flow <= 0;
+            wb_flow <= NOP_MEM_WB_FLOW;
         end else begin
             wb_flow <= mem_flow;
         end

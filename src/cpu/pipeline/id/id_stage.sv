@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 // `default_nettype none
-
+`include "instruction_types.sv"
 `include "control_signal_types.sv"
 `include "pipeline_flow_types.sv"
 
@@ -15,19 +15,16 @@ module id_stage (
     hazard_if.id_stage hd
 );
     id_control_t id_ctrl;
-    ex_control_t ex_ctrl;
-    mem_control_t mem_ctrl;
-    wb_control_t wb_ctrl;
 
     controller controller_instance (
-        .opcode(inflow.instr[6:2]),
+        .opcode(opcode_t'(inflow.instr[6:2])),
         .fun3(inflow.instr[14:12]),
         .fun7(inflow.instr[30]),
 
         .id_ctrl(id_ctrl),
-        .ex_ctrl(ex_ctrl),
-        .mem_ctrl(mem_ctrl),
-        .wb_ctrl(wb_ctrl)
+        .ex_ctrl(outflow.ex_ctrl),
+        .mem_ctrl(outflow.mem_ctrl),
+        .wb_ctrl(outflow.wb_ctrl)
     );
 
     immgen immgen_instance (
@@ -58,18 +55,4 @@ module id_stage (
     // pass register names to hazard detection unit
     assign hd.id.rs1_addr = outflow.rs1_addr;
     assign hd.id.rs2_addr = outflow.rs2_addr;
-
-    // if stall or flush, use do-nothing control signals
-    // no need also put mux on datapath values
-    always_comb begin
-        if (hd.Stall || hd.Flush) begin
-            outflow.ex_ctrl = NOP_EX_CTRL;
-            outflow.mem_ctrl = NOP_MEM_CTRL;
-            outflow.wb_ctrl = NOP_WB_CTRL;
-        end else begin
-            outflow.ex_ctrl = ex_ctrl;
-            outflow.mem_ctrl = mem_ctrl;
-            outflow.wb_ctrl = wb_ctrl;
-        end
-    end
 endmodule

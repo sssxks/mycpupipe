@@ -2,6 +2,7 @@
 `define PIPELINE_FLOW_TYPES_SV
 
 `include "control_signal_types.sv"
+`include "instruction_types.sv"
 
 // package pipeline_flow;
 
@@ -59,6 +60,13 @@ typedef struct packed {
     logic [4:0] rd_addr;
     logic [31:0] rd_data;  
 } wb_id_backflow_t;
+
+// nop flows, used in initializing(resetting) cpu state
+// and when stall/flush happens
+const if_id_flow_t NOP_IF_ID_FLOW = '{32'h0, NOP_INSTR};
+const id_ex_flow_t NOP_ID_EX_FLOW = '{32'h0, 32'h0, 32'h0, 5'h0, 5'h0, 5'h0, 32'h0, NOP_EX_CTRL, NOP_MEM_CTRL, NOP_WB_CTRL};
+const ex_mem_flow_t NOP_EX_MEM_FLOW = '{32'h0, 5'h0, 32'h0, 32'h0, 32'h0, 32'h0, NOP_MEM_CTRL, NOP_WB_CTRL};
+const mem_wb_flow_t NOP_MEM_WB_FLOW = '{5'h0, 32'h0, 32'h0, 32'h0, 32'h0, NOP_WB_CTRL};
 
 // endpackage
 

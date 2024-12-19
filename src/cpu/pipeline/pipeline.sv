@@ -36,7 +36,7 @@ module pipeline(
         
         .outflow(if_flowout),
         .backflow(ex_if_backflow),
-        .hd(hd.if_stage),
+        .hd(hd.listener),
 
         .instr_memory_if(instr_mem_if)
     );
@@ -44,6 +44,7 @@ module pipeline(
     if_id_reg if_id_reg_instance (
         .clk(clk),
         .reset(reset),
+        .hd(hd.listener),
 
         .if_flow(if_flowout),
         .id_flow(id_flowin)
@@ -62,6 +63,7 @@ module pipeline(
     id_ex_reg id_ex_reg_instance (
         .clk(clk),
         .reset(reset),
+        .hd(hd.listener),
 
         .id_flow(id_flowout),
         .ex_flow(ex_flowin)

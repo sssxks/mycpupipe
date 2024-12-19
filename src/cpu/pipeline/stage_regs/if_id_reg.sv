@@ -6,13 +6,15 @@
 module if_id_reg (
     input logic clk,
     input logic reset,
+    hazard_if.listener hd,
 
     input if_id_flow_t if_flow,
     output if_id_flow_t id_flow    
 );
     always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
-            id_flow <= 0;
+        // if we need to flush, discard the instruction just fetched
+        if (reset || hd.Flush) begin
+            id_flow <= NOP_IF_ID_FLOW;
         end else begin
             id_flow <= if_flow;
         end

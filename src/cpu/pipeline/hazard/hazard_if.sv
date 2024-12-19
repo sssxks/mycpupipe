@@ -24,9 +24,7 @@ interface hazard_if;
     );
 
     modport id_stage (
-        output id,
-        input Stall,
-        input Flush
+        output id
     );
 
     modport control (
@@ -37,7 +35,7 @@ interface hazard_if;
         output Flush
     );
 
-    modport if_stage (
+    modport listener (
         input Stall,
         input Flush
     );

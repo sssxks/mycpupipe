@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
 // `default_nettype none
+`include "instruction_types.sv"
 
 module if_stage (
     input  logic            clk,
@@ -8,7 +9,7 @@ module if_stage (
     output if_id_flow_t     outflow,
     input  ex_if_backflow_t backflow,
 
-    hazard_if.if_stage hd,
+    hazard_if.listener hd,
     
     instr_memory_if.user instr_memory_if
 );
@@ -24,12 +25,5 @@ module if_stage (
     // communicate with instruction memory
     assign instr_memory_if.pc = outflow.pc;
 
-    // if flush given, we discard the instruction just fetched
-    always_comb begin
-        if (hd.Flush) begin
-            outflow.instr = 32'h00000013; // nop
-        end else begin
-            outflow.instr = instr_memory_if.instr;
-        end
-    end
+    assign outflow.instr = instr_memory_if.instr;
 endmodule

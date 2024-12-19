@@ -19,13 +19,13 @@ module ex_stage (
     logic [31:0] a, b;
     always_comb begin
         case (fd.a)
-            forwarding_t::FORWARD_MEM: a = fd.data.mem;
-            forwarding_t::FORWARD_WB: a = fd.data.wb;
+            FORWARD_MEM: a = fd.data.mem;
+            FORWARD_WB: a = fd.data.wb;
             default: a = inflow.rs1_data;
         endcase
         case (fd.b)
-            forwarding_t::FORWARD_MEM: b = fd.data.mem;
-            forwarding_t::FORWARD_WB: b = fd.data.wb;
+            FORWARD_MEM: b = fd.data.mem;
+            FORWARD_WB: b = fd.data.wb;
             default: b = inflow.ex_ctrl.ALUSrcB ?
            inflow.immediate : inflow.rs2_data;
         endcase
@@ -48,7 +48,7 @@ module ex_stage (
         (inflow.ex_ctrl.Branch & (inflow.ex_ctrl.InverseBranch ^ zero));
 
     // hazard detection unit needs these signals
-    assign hd.ex.Load = inflow.wb_ctrl.MemtoReg == 2'd1; // if we are about to load
+    assign hd.ex.Load = inflow.wb_ctrl.MemtoReg == MEMTOREG_MEM; // if we are about to load
     assign hd.ex.rd_addr = inflow.rd_addr;
     assign hd.ex.PCSrc = backflow.PCSrc; // if we are about to jump
 

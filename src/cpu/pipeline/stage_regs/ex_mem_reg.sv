@@ -12,7 +12,7 @@ module ex_mem_reg (
 );
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
-            mem_flow <= 0;
+            mem_flow <= NOP_EX_MEM_FLOW;
         end else begin
             mem_flow <= ex_flow;
         end

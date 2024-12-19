@@ -14,10 +14,10 @@ module wb_stage (
     assign backflow.rd_addr = inflow.rd_addr;
     always_comb begin
         case (inflow.wb_ctrl.MemtoReg)
-            memtoreg_t::MEMTOREG_ALU: backflow.rd_data = inflow.alu_result;
-            memtoreg_t::MEMTOREG_MEM: backflow.rd_data = inflow.data_in;
-            memtoreg_t::MEMTOREG_PC : backflow.rd_data = inflow.pc_write;
-            memtoreg_t::MEMTOREG_IMM: backflow.rd_data = inflow.immediate;
+            MEMTOREG_ALU: backflow.rd_data = inflow.alu_result;
+            MEMTOREG_MEM: backflow.rd_data = inflow.data_in;
+            MEMTOREG_PC : backflow.rd_data = inflow.pc_write;
+            MEMTOREG_IMM: backflow.rd_data = inflow.immediate;
         endcase
     end
 
