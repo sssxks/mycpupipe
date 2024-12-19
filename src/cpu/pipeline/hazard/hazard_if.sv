@@ -1,6 +1,8 @@
 `timescale 1ns/1ps
 // `default_nettype none
 
+`include "instruction_types.sv"
+
 typedef struct packed {
     logic Load;
     logic PCSrc;
@@ -10,6 +12,7 @@ typedef struct packed {
 typedef struct packed {
     logic [4:0] rs1_addr;
     logic [4:0] rs2_addr;
+    opcode_t opcode;
 } id_hazard_input_t;
 
 interface hazard_if;

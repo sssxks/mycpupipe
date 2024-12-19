@@ -48,9 +48,6 @@ module id_stage (
     );
 
     assign outflow.rs1_addr = inflow.instr[19:15];
-    // TODO remove this comment
-    // 除了ALU src要用，还有data in 也要用啊喂
-    // assign outflow.rs2_addr = outflow.ex_ctrl.ALUSrcB ? 0 : inflow.instr[24:20];
     assign outflow.rs2_addr = inflow.instr[24:20];
     assign outflow.rd_addr = inflow.instr[11:7];
     assign outflow.pc = inflow.pc;
@@ -58,4 +55,5 @@ module id_stage (
     // pass register names to hazard detection unit
     assign hd.id.rs1_addr = outflow.rs1_addr;
     assign hd.id.rs2_addr = outflow.rs2_addr;
+    assign hd.id.opcode = opcode_t'(inflow.instr[6:2]);
 endmodule
