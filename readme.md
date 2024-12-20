@@ -1,14 +1,14 @@
 # Lab5 Pipeline CPU
 
-这个项目是浙大计组 2024 秋冬的 Lab5，实现了一个简单的 CPU 流水线。  
+浙大计组 2024 秋冬的 Lab5，实现了一个简单的 CPU 流水线。  
 This project is Lab5 of Zhejiang University's Computer Organization course for Fall-Winter 2024, implementing a simple CPU pipeline.
 
-CPU 的设计介绍见 [my-pipe-design.md](./my-pipe-design.md)。  
-The CPU design is introduced in [my-pipe-design.md](./my-pipe-design.md).
+CPU 的设计介绍见 [my-pipe-design.md](./doc/my-pipe-design.md)。  
+The CPU design is introduced in [my-pipe-design.md](./doc/my-pipe-design.md).
 
-[readme_en.md](./readme_en.md)
+[readme_en.md](./doc/readme_en.md)
 
-[实验报告 Report](./report.typ)
+[实验报告 Report](./doc/report.typ)
 
 ## 项目结构
 
@@ -76,7 +76,7 @@ The CPU design is introduced in [my-pipe-design.md](./my-pipe-design.md).
      - `Write Depth` 和 `Read Depth`：`1024`
      - `Operating Mode`：`Write First`
      - **重要！** `Primitives Output Register`：取消打勾
-     - `Load Init File`：选择 [simulation/data_memory.coe](../simulation/data_memory.coe)
+     - `Load Init File`：选择 [simulation/data_memory.coe](./simulation/data_memory.coe)
      - 其他保持默认。
    - 点击 `Generate`。
 
@@ -87,7 +87,7 @@ The CPU design is introduced in [my-pipe-design.md](./my-pipe-design.md).
      - `Memory Type`：`ROM`
      - `Depth`：`1024`
      - `Data Width`：`32`
-     - `Load COE File`：选择 [simulation/Hazard_Stall.coe](../simulation/Hazard_Stall.coe)，或者你想用的其他 COE 文件。
+     - `Load COE File`：选择 [simulation/Hazard_Stall.coe](./simulation/Hazard_Stall.coe)，或者你想用的其他 COE 文件。
      - 其他保持默认。
    - 点击 `Generate`。
 
@@ -115,7 +115,7 @@ sudo apt install verilator
 
 ## 如何编程这个 CPU？
 
-如果你想用其他的 COE (coefficient)文件，可以在 `simulation/` 目录下找到一些 COE 文件，或者自己写一个 COE 文件。可以使用 [`build.sh`](../simulation/build.sh) 从汇编代码生成 COE 文件。（注：COE 文件的格式见 [这里](https://docs.amd.com/r/en-US/ug896-vivado-ip/COE-File-Syntax)）
+如果你想用其他的 COE (coefficient)文件，可以在 `simulation/` 目录下找到一些 COE 文件，或者自己写一个 COE 文件。可以使用 [`build.sh`](./simulation/build.sh) 从汇编代码生成 COE 文件。（注：COE 文件的格式见 [这里](https://docs.amd.com/r/en-US/ug896-vivado-ip/COE-File-Syntax)）
 
 以下是脚本的基本逻辑：
 

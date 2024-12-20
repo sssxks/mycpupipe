@@ -66,7 +66,7 @@ The project structure is as follows, mainly including the source code for CPU de
      - `Write Depth` and `Read Depth`: `1024`
      - `Operating Mode`: `Write First`
      - **Important!** `Primitives Output Register`: Unchecked
-     - `Load Init File`: Select [simulation/data_memory.coe](../simulation/data_memory.coe)
+     - `Load Init File`: Select [simulation/data_memory.coe](./simulation/data_memory.coe)
      - Keep other settings as default.
    - Click `Generate`.
 
@@ -77,7 +77,7 @@ The project structure is as follows, mainly including the source code for CPU de
      - `Memory Type`: `ROM`
      - `Depth`: `1024`
      - `Data Width`: `32`
-     - `Load COE File`: Select [simulation/Hazard_Stall.coe](../simulation/Hazard_Stall.coe) or any other COE file you want to use.
+     - `Load COE File`: Select [simulation/Hazard_Stall.coe](./simulation/Hazard_Stall.coe) or any other COE file you want to use.
      - Keep other settings as default.
    - Click `Generate`.
 
@@ -86,7 +86,7 @@ The project structure is as follows, mainly including the source code for CPU de
 
 ## How to Program this CPU?
 
-If you want to use other COE (coefficient) files, you can find some COE files in the `simulation/` directory or write your own. You can use [`build.sh`](../simulation/build.sh) to generate COE files from assembly code. (Note: The COE file format is described [here](https://docs.amd.com/r/en-US/ug896-vivado-ip/COE-File-Syntax))
+If you want to use other COE (coefficient) files, you can find some COE files in the `simulation/` directory or write your own. You can use [`build.sh`](./simulation/build.sh) to generate COE files from assembly code. (Note: The COE file format is described [here](https://docs.amd.com/r/en-US/ug896-vivado-ip/COE-File-Syntax))
 
 The basic logic of the script is as follows:
 
