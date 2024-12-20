@@ -6,9 +6,9 @@ This project is Lab5 of Zhejiang University's Computer Organization course for F
 CPU 的设计介绍见 [my-pipe-design.md](./doc/my-pipe-design.md)。  
 The CPU design is introduced in [my-pipe-design.md](./doc/my-pipe-design.md).
 
-[readme_en.md](./doc/readme_en.md)
+[readme_en.md](./readme_en.md)
 
-[实验报告 Report](./doc/report.typ)
+[实验报告 Report](./doc/report/report.typ) clone项目后即可查看pdf
 
 ## 项目结构
 
@@ -183,6 +183,8 @@ sudo apt install gcc-riscv64-unknown-elf
 > **注意**：这个 package 的命名分成三部分：`<架构>-<供应商>-<操作系统或环境>`。`elf` 表示目标环境是基于 ELF 文件格式的嵌入式系统（Executable and Linkable Format），也就是裸机（bare-metal）程序。
 
 ## 仿真结果
+
+见[实验报告](./doc/report/report.typ)。
 
 ## 资源和参考
 

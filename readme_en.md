@@ -172,6 +172,10 @@ sudo apt install verilator
 
 Then, run the `linter/update_linter.sh` script, which will generate a `linter/verilator.f` file to specify the command-line arguments for `verilator`.
 
+## Simulation Result
+
+See [Lab Report](./doc/report/report.typ).
+
 ## Resources and References
 
 - The textbook used by Zhejiang University:
