@@ -92,7 +92,7 @@
   <project-structure>
   项目结构如下所示。主要包含了CPU设计的源代码，linter有关文件以及仿真有关文件。由于vivado仿真耗时较长，我使用了Verilator作为linter结合#link("https://marketplace.visualstudio.com/items?itemName=mshr-h.veriloghdl")[VS Code 插件];，用于检查语法错误。仿真文件主要指的是汇编以及vivado波形图配置文件。
 
-  ```plaintext
+  ```bash
   .
   ├── doc                           # Documentation files
   ├── linter
@@ -884,9 +884,9 @@ main:
     addi  x2, x0, 1      # x2 = 0x1
     addi  x3, x0, 1      # x3 = 0x1
     addi  x4, x0, 1      # x4 = 0x1
-    lw    x5, 0x8(x0)    # x5 = 0x8000_0000   # mem
+    lw    x5, 0x8(x0)    # x5 = 0x8000_0000   # wb
     # nop                                     # load-use hazard, stall
-    add   x6, x5, x1     # x6 = 0x8000_0001   # mem->ex forwarding
+    add   x6, x5, x1     # x6 = 0x8000_0001   # wb->ex forwarding
     xor   x7, x1, x2     # x7 = 0             # wb
     beq   x5, x6, error  # 不跳转
     sub   x8, x1, x7     # x8 = 1             # wb->ex forwarding
@@ -917,7 +917,36 @@ loop:
     jal   x0, loop
 ```
 
-这里用注释标出了每个forwarding, stall 以及 flush 的位置。
+这里用注释标出了每个forwarding, stall 以及 flush 的位置。以下举几个例子分析：
+
++ #strong[Load-Use Hazard and Stall];:
+
+    ```yasm
+    lw    x5, 0x8(x0)    # x5 = 0x8000_0000   # wb
+    # nop                                     # load-use hazard, stall
+    add   x6, x5, x1     # x6 = 0x8000_0001   # wb->ex forwarding
+    ```
+
+    这里 `lw` 指令从内存加载数据到寄存器 `x5`，紧接着的 `add` 指令使用了
+    `x5` 的值。由于 `lw` 指令需要一个周期才能完成，所以需要在 `add`
+    指令之前插入了一个 `nop` 指令来避免数据冒险（load-use hazard）。
+
++ #strong[Forwarding];:
+
+    ```yasm
+    ori   x16, x14, 0x666 # x16 = 0x0000_0667 # mem
+    sub   x16, x16, x14   # x16 = 0x0000_0666 # mem->ex forwarding    ```
+    在 `ori` 指令中，`x14` 的值被存储到 `x16` 中。紧接着的 `sub`指令使用了 `x16` 的值。
++ #strong[Branch and Flush];:
+
+    ```yasm
+    bne   x5, x6, test1  # jump to test1
+    jal   x30, error     # x30 = pc + 4 则出错 # flush
+    ```
+
+    在 `bne` 指令中，如果 `x5` 不等于 `x6`，则跳转到 `test1`
+    标签。否则，执行 `jal` 指令跳转到 `error` 标签，并将当前 PC + 4
+    的值存储到 `x30` 中。这会导致流水线被刷新（flush）。
 
 #page(margin: (x: 0pt, y: 0pt))[
   #set align(center)
