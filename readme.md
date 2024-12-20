@@ -111,7 +111,7 @@ sudo apt update
 sudo apt install verilator
 ```
 
-然后运行 `linter/update_linter.sh` 脚本，它会生成一个 `linter/verilator.f` 文件，用于指定 verilator 的命令行参数。
+然后在写代码的时候保持运行 `linter/update_linter.sh` 脚本，它会更新 `linter/verilator.f` 文件，用于指定 verilator 的命令行参数。
 
 ## 如何编程这个 CPU？
 
@@ -173,12 +173,7 @@ sed 's/$/,/' "$HEX_REV" | sed '$ s/,$/;/' >> "$COE"
 
 ### 安装 GNU 交叉编译 Toolchain
 
-脚本用到的 GNU 交叉编译 toolchain 可以这样安装（以 Ubuntu 为例）：
-
-```sh
-sudo apt update
-sudo apt install gcc-riscv64-unknown-elf
-```
+脚本中用到了gcc-riscv32-unknown-elf，然而`apt`里面并没有这个包，可以自己编译或者使用这个仓库提供的二进制<https://github.com/stnolting/riscv-gcc-prebuilt>。我没有自己编译成功，所以使用了这个仓库提供的二进制。
 
 > **注意**：这个 package 的命名分成三部分：`<架构>-<供应商>-<操作系统或环境>`。`elf` 表示目标环境是基于 ELF 文件格式的嵌入式系统（Executable and Linkable Format），也就是裸机（bare-metal）程序。
 

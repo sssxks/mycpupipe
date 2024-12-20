@@ -144,12 +144,7 @@ You can also modify the script to compile from C or C++.
 
 ### Installing the GNU Cross-Compilation Toolchain
 
-The GNU cross-compilation toolchain used in the script can be installed as follows (using Ubuntu as an example):
-
-```sh
-sudo apt update
-sudo apt install gcc-riscv64-unknown-elf
-```
+Above script uses `gcc-riscv32-unknown-elf`, which is not available in `apt`. You can compile it yourself or use the prebuilt binaries provided by this repository: <https://github.com/stnolting/riscv-gcc-prebuilt>
 
 > **Note**: The package name is divided into three parts: `<architecture>-<vendor>-<OS or environment>`. `elf` indicates that the target environment is an embedded system based on the ELF file format (Executable and Linkable Format), i.e., bare-metal programs.
 
@@ -170,7 +165,7 @@ sudo apt update
 sudo apt install verilator
 ```
 
-Then, run the `linter/update_linter.sh` script, which will generate a `linter/verilator.f` file to specify the command-line arguments for `verilator`.
+Then, keep the `linter/update_linter.sh` running at background when coding. the script updates the `linter/verilator.f` file to specify the command-line arguments for `verilator`.
 
 ## Simulation Result
 
