@@ -20,7 +20,7 @@ module mem_stage (
 
     // decide which pc next to write to register
     // jump=1 -> jalr, jump=0 -> auipc
-    assign outflow.pc_write = inflow.mem_ctrl.Jump ? inflow.pc_incr : inflow.pc_offset; 
+    assign outflow.pc_write = inflow.mem_ctrl.Jump ? inflow.pc_incr : inflow.pc_target; 
     
     // pass rest of data
     assign outflow.immediate = inflow.immediate;

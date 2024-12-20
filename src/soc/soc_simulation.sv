@@ -4,7 +4,7 @@ module soc_simulation(
     input wire clk,
     input wire reset
 );
-    instr_memory_if instr_mem_if();    
+    instr_memory_if instr_mem_if();
     data_memory_if data_mem_if();
 
     cpu uut (
@@ -24,5 +24,3 @@ module soc_simulation(
         .mem_if(data_mem_if.mem)
     );
 endmodule
-
-

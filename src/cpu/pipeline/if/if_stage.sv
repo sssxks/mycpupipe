@@ -18,7 +18,7 @@ module if_stage (
         .reset(reset),
 
         .update_n(hd.Stall),
-        .pc_in(backflow.PCSrc ? backflow.pc_offset : outflow.pc + 32'd4),
+        .pc_in(backflow.PCSrc ? backflow.pc_target : outflow.pc + 32'd4),
         .pc_out(outflow.pc)
     );
     

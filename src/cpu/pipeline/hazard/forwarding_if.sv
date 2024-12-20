@@ -37,4 +37,3 @@ interface forwarding_if;
     );
 
 endinterface //forwarding_if
-

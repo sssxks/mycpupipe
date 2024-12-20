@@ -44,7 +44,7 @@ module ex_stage (
     assign outflow.rs2_data = fd_rs2_data;
 
     // now we works on branching, first pass branched PC and signal back to if
-    assign backflow.pc_offset = inflow.ex_ctrl.PCOffset ?
+    assign backflow.pc_target = inflow.ex_ctrl.PCTarget ?
         outflow.alu_result : inflow.pc + inflow.immediate; // for jalr
     assign backflow.PCSrc = inflow.mem_ctrl.Jump || 
         (inflow.ex_ctrl.Branch & (inflow.ex_ctrl.InverseBranch ^ zero));
@@ -57,7 +57,7 @@ module ex_stage (
 
     // then pass pc calculation result to next stage
     assign outflow.pc_incr = inflow.pc + 32'd4;
-    assign outflow.pc_offset = backflow.pc_offset;
+    assign outflow.pc_target = backflow.pc_target;
 
     // pass rest of data
     assign outflow.immediate = inflow.immediate;

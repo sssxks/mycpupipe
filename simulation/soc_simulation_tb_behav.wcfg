@@ -13,11 +13,11 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,254.001 ns"></ZoomEndTime>
-      <Cursor1Time time="600.000 ns"></Cursor1Time>
+      <ZoomEndTime time="4,373.372 ns"></ZoomEndTime>
+      <Cursor1Time time="1,010.843 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="204"></NameColumnWidth>
+      <NameColumnWidth column_width="199"></NameColumnWidth>
       <ValueColumnWidth column_width="72"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="22" />
@@ -67,24 +67,6 @@
       <obj_property name="ElementShortName">if_flowout</obj_property>
       <obj_property name="ObjectShortName">if_flowout</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/if_flowout.pc" type="array">
-         <obj_property name="ElementShortName">.pc[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.pc[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/if_flowout.instr" type="array">
-         <obj_property name="ElementShortName">.instr[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.instr[31:0]</obj_property>
-         <obj_property name="CustomSignalColor">#FF00FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/if_flowout.pc" type="array">
-         <obj_property name="ElementShortName">.pc[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.pc[31:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/if_flowout.instr" type="array">
-         <obj_property name="ElementShortName">.instr[31:0]</obj_property>
-         <obj_property name="ObjectShortName">.instr[31:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowin" type="array">
       <obj_property name="ElementShortName">id_flowin</obj_property>
@@ -132,10 +114,98 @@
       <obj_property name="ElementShortName">id_flowout</obj_property>
       <obj_property name="ObjectShortName">id_flowout</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.pc" type="array">
+         <obj_property name="ElementShortName">.pc[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.pc[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.rs1_data" type="array">
+         <obj_property name="ElementShortName">.rs1_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs1_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.rs2_data" type="array">
+         <obj_property name="ElementShortName">.rs2_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs2_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.rs1_addr" type="array">
+         <obj_property name="ElementShortName">.rs1_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs1_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.rs2_addr" type="array">
+         <obj_property name="ElementShortName">.rs2_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs2_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.rd_addr" type="array">
+         <obj_property name="ElementShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.immediate" type="array">
+         <obj_property name="ElementShortName">.immediate[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.immediate[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.ex_ctrl" type="array">
+         <obj_property name="ElementShortName">.ex_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.ex_ctrl</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.mem_ctrl" type="array">
+         <obj_property name="ElementShortName">.mem_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.mem_ctrl</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/id_flowout.wb_ctrl" type="array">
+         <obj_property name="ElementShortName">.wb_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.wb_ctrl</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin" type="array">
       <obj_property name="ElementShortName">ex_flowin</obj_property>
       <obj_property name="ObjectShortName">ex_flowin</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.pc" type="array">
+         <obj_property name="ElementShortName">.pc[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.pc[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.rs1_data" type="array">
+         <obj_property name="ElementShortName">.rs1_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs1_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.rs2_data" type="array">
+         <obj_property name="ElementShortName">.rs2_data[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs2_data[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.rs1_addr" type="array">
+         <obj_property name="ElementShortName">.rs1_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs1_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.rs2_addr" type="array">
+         <obj_property name="ElementShortName">.rs2_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rs2_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.rd_addr" type="array">
+         <obj_property name="ElementShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.immediate" type="array">
+         <obj_property name="ElementShortName">.immediate[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.immediate[31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.ex_ctrl" type="array">
+         <obj_property name="ElementShortName">.ex_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.ex_ctrl</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.mem_ctrl" type="array">
+         <obj_property name="ElementShortName">.mem_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.mem_ctrl</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_flowin.wb_ctrl" type="array">
+         <obj_property name="ElementShortName">.wb_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.wb_ctrl</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/ex_stage_instance/fd_rs1_data" type="array">
       <obj_property name="ElementShortName">fd_rs1_data[31:0]</obj_property>
@@ -184,7 +254,7 @@
       <obj_property name="label">inner_mem</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
-      <wvobject fp_name="/soc_simulation_tb/m0/uut/inner_mem_if_instance/MemRW" type="logic">
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/inner_mem_if_instance/MemRW" type="other">
          <obj_property name="ElementShortName">MemRW</obj_property>
          <obj_property name="ObjectShortName">MemRW</obj_property>
       </wvobject>
@@ -230,10 +300,60 @@
       <obj_property name="ElementShortName">mem_flowout</obj_property>
       <obj_property name="ObjectShortName">mem_flowout</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/mem_flowout.rd_addr" type="array">
+         <obj_property name="ElementShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/mem_flowout.alu_result" type="array">
+         <obj_property name="ElementShortName">.alu_result[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.alu_result[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/mem_flowout.data_in" type="array">
+         <obj_property name="ElementShortName">.data_in[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.data_in[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/mem_flowout.pc_write" type="array">
+         <obj_property name="ElementShortName">.pc_write[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.pc_write[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/mem_flowout.immediate" type="array">
+         <obj_property name="ElementShortName">.immediate[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.immediate[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/mem_flowout.wb_ctrl" type="array">
+         <obj_property name="ElementShortName">.wb_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.wb_ctrl</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/wb_flowin" type="array">
       <obj_property name="ElementShortName">wb_flowin</obj_property>
       <obj_property name="ObjectShortName">wb_flowin</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/wb_flowin.rd_addr" type="array">
+         <obj_property name="ElementShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="ObjectShortName">.rd_addr[4:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/wb_flowin.alu_result" type="array">
+         <obj_property name="ElementShortName">.alu_result[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.alu_result[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/wb_flowin.data_in" type="array">
+         <obj_property name="ElementShortName">.data_in[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.data_in[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/wb_flowin.pc_write" type="array">
+         <obj_property name="ElementShortName">.pc_write[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.pc_write[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/wb_flowin.immediate" type="array">
+         <obj_property name="ElementShortName">.immediate[31:0]</obj_property>
+         <obj_property name="ObjectShortName">.immediate[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/soc_simulation_tb/m0/uut/pipeline_instance/wb_flowin.wb_ctrl" type="array">
+         <obj_property name="ElementShortName">.wb_ctrl</obj_property>
+         <obj_property name="ObjectShortName">.wb_ctrl</obj_property>
+      </wvobject>
    </wvobject>
 </wave_config>

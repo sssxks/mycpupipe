@@ -50,14 +50,14 @@ typedef enum logic [1:0] {
 } memtoreg_t;
 
 typedef enum logic {
-    OFFSET_PC = 1'b1, // offset PC by alu result (jalr)
+    SET_ALU = 1'b1, // set PC to alu result (jalr)
     OFFSET_IMM = 1'b0 // offset PC by immediate value (others)
-} pcoffset_t;
+} pctarget_t;
 
 // conditional jump instruction
 typedef enum logic {
-    BRANCH_IS = 1'b1, // is a branch instruction
-    BRANCH_NO = 1'b0  // not a branch instruction
+    BRANCH = 1'b1, // is a branch instruction
+    NO_BRANCH = 1'b0  // not a branch instruction
 } branch_t;
 
 // only valid when Branch=1
@@ -98,7 +98,7 @@ typedef struct packed{
     alu_t ALUControl;
     alusrcb_t ALUSrcB;
 
-    pcoffset_t PCOffset; 
+    pctarget_t PCTarget; 
     branch_t Branch;
     inversebranch_t InverseBranch; 
                                    
@@ -126,13 +126,13 @@ const id_control_t NOP_ID_CTRL = '{
 const ex_control_t NOP_EX_CTRL = '{
     ALUControl: ALU_ADD,
     ALUSrcB: ALU_RS2,
-    PCOffset: OFFSET_IMM,
-    Branch: BRANCH_NO,
+    PCTarget: OFFSET_IMM,
+    Branch: NO_BRANCH,
     InverseBranch: NORMAL_BRANCH
 }; 
 const mem_control_t NOP_MEM_CTRL = '{
     MemRW: MEM_READ,
-    RWType: BYTE,
+    RWType: WORD,
     Jump: NO_JUMP
 };
 const wb_control_t NOP_WB_CTRL = '{

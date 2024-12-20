@@ -11,7 +11,7 @@ typedef enum logic [4:0] {
     OPCODE_JALR = 5'b11001,
     OPCODE_S_TYPE = 5'b01000,
     OPCODE_SB_TYPE = 5'b11000,
-    OPCODE_UJ_TYPE = 5'b11011,
+    OPCODE_UJ_TYPE = 5'b11011, // jal
     OPCODE_LUI = 5'b01101,
     OPCODE_AUIPC = 5'b00101,
     OPCODE_SYSTEM = 5'b11100

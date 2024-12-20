@@ -27,24 +27,24 @@ module id_stage (
         .wb_ctrl(outflow.wb_ctrl)
     );
 
-    immgen immgen_instance (
-        .ImmSel(id_ctrl.ImmSel),
-
-        .instr(inflow.instr[31:7]),
-        .immediate(outflow.immediate)
-    );
-
     regs regs_instance (
         .clk(clk),
         .rst(reset),
 
-        .reg_write(backflow.RegWrite),
         .rs1_addr(outflow.rs1_addr),
         .rs2_addr(outflow.rs2_addr),
-        .wt_addr(backflow.rd_addr),
-        .wt_data(backflow.rd_data),
         .rs1_data(outflow.rs1_data),
-        .rs2_data(outflow.rs2_data)
+        .rs2_data(outflow.rs2_data),
+        .reg_write(backflow.RegWrite),
+        .wt_addr(backflow.rd_addr),
+        .wt_data(backflow.rd_data)
+    );
+
+    immgen immgen_instance (
+        .ImmSel(id_ctrl.ImmSel),
+        .instr(inflow.instr[31:7]),
+
+        .immediate(outflow.immediate)
     );
 
     assign outflow.rs1_addr = inflow.instr[19:15];

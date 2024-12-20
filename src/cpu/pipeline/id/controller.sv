@@ -21,55 +21,45 @@ module controller(
         case (opcode)
         OPCODE_R_TYPE: begin
             ex_ctrl.ALUSrcB = ALU_RS2;
-            wb_ctrl.MemtoReg = MEMTOREG_ALU;
-            wb_ctrl.RegWrite = REG_WRITE;
-            mem_ctrl.MemRW = MEM_READ;
             ex_ctrl.ALUControl = alu_t'({fun7, fun3});
+            wb_ctrl.RegWrite = REG_WRITE;
+            wb_ctrl.MemtoReg = MEMTOREG_ALU;
         end
         OPCODE_IMMEDIATE_CALCULATION: begin
             id_ctrl.ImmSel = IMMGEN_I;
             ex_ctrl.ALUSrcB = ALU_IMM;
-            wb_ctrl.MemtoReg = MEMTOREG_ALU;
-            wb_ctrl.RegWrite = REG_WRITE;
-            mem_ctrl.MemRW = MEM_READ;
             ex_ctrl.ALUControl = alu_t'({fun3 == FUN3_SR ? fun7 : 1'b0, fun3});
+            wb_ctrl.RegWrite = REG_WRITE;
+            wb_ctrl.MemtoReg = MEMTOREG_ALU;
         end
         OPCODE_LOAD: begin
             id_ctrl.ImmSel = IMMGEN_I;
             ex_ctrl.ALUSrcB = ALU_IMM;
-            wb_ctrl.MemtoReg = MEMTOREG_MEM;
-            wb_ctrl.RegWrite = REG_WRITE;
+            ex_ctrl.ALUControl = ALU_ADD;
             mem_ctrl.MemRW = MEM_READ;
             mem_ctrl.RWType = rw_type_t'(fun3);
-            ex_ctrl.ALUControl = ALU_ADD;
+            wb_ctrl.RegWrite = REG_WRITE;
+            wb_ctrl.MemtoReg = MEMTOREG_MEM;
         end
         OPCODE_JALR: begin
             id_ctrl.ImmSel = IMMGEN_I;
             ex_ctrl.ALUSrcB = ALU_IMM;
-            wb_ctrl.MemtoReg = MEMTOREG_PC;
-            mem_ctrl.Jump = JUMP;
-            ex_ctrl.PCOffset = OFFSET_PC;
-            wb_ctrl.RegWrite = REG_WRITE;
-            mem_ctrl.MemRW = MEM_READ;
             ex_ctrl.ALUControl = ALU_ADD;
+            ex_ctrl.PCTarget = SET_ALU;
+            mem_ctrl.Jump = JUMP;
+            wb_ctrl.RegWrite = REG_WRITE;
+            wb_ctrl.MemtoReg = MEMTOREG_PC; // PC + 4
         end
         OPCODE_S_TYPE: begin
             id_ctrl.ImmSel = IMMGEN_S;
             ex_ctrl.ALUSrcB = ALU_IMM;
-            wb_ctrl.RegWrite = NO_REG_WRITE;
+            ex_ctrl.ALUControl = ALU_ADD;
             mem_ctrl.MemRW = MEM_WRITE;
             mem_ctrl.RWType = rw_type_t'(fun3);
-            ex_ctrl.ALUControl = ALU_ADD;
         end
         OPCODE_SB_TYPE: begin
             id_ctrl.ImmSel = IMMGEN_SB;
             ex_ctrl.ALUSrcB = ALU_RS2;
-            wb_ctrl.MemtoReg = MEMTOREG_ALU;
-            ex_ctrl.Branch = BRANCH_IS;
-            ex_ctrl.InverseBranch = inversebranch_t'(fun3[0]); // NE, GE, GEU
-            ex_ctrl.PCOffset = OFFSET_IMM;
-            wb_ctrl.RegWrite = NO_REG_WRITE;
-            mem_ctrl.MemRW = MEM_READ;
             case (fun3)
                 FUN3_BEQ: ex_ctrl.ALUControl = ALU_EQ;
                 FUN3_BNE: ex_ctrl.ALUControl = ALU_NE;
@@ -77,28 +67,28 @@ module controller(
                 FUN3_BGE: ex_ctrl.ALUControl = ALU_GE;
                 FUN3_BLTU: ex_ctrl.ALUControl = ALU_LTU;
                 FUN3_BGEU: ex_ctrl.ALUControl = ALU_GEU;
-                default: ex_ctrl.ALUControl = alu_t'('x);
             endcase
+            ex_ctrl.Branch = BRANCH;
+            ex_ctrl.InverseBranch = inversebranch_t'(fun3[0]); // BNE, BGE, BGEU
+            ex_ctrl.PCTarget = OFFSET_IMM;
         end
         OPCODE_UJ_TYPE: begin
             id_ctrl.ImmSel = IMMGEN_UJ;
-            wb_ctrl.MemtoReg = MEMTOREG_PC; // PC + 4
+            ex_ctrl.PCTarget = OFFSET_IMM;
             mem_ctrl.Jump = JUMP;
-            ex_ctrl.PCOffset = OFFSET_IMM;
             wb_ctrl.RegWrite = REG_WRITE;
-            mem_ctrl.MemRW = MEM_READ;
+            wb_ctrl.MemtoReg = MEMTOREG_PC; // PC + 4
         end
         OPCODE_LUI: begin
             id_ctrl.ImmSel = IMMGEN_U;
-            wb_ctrl.MemtoReg = MEMTOREG_IMM;
             wb_ctrl.RegWrite = REG_WRITE;
-            mem_ctrl.MemRW = MEM_READ;
+            wb_ctrl.MemtoReg = MEMTOREG_IMM;
         end
         OPCODE_AUIPC: begin
             id_ctrl.ImmSel = IMMGEN_U;
-            wb_ctrl.MemtoReg = MEMTOREG_PC; // PC + imm
+            ex_ctrl.PCTarget = OFFSET_IMM;
             wb_ctrl.RegWrite = REG_WRITE;
-            mem_ctrl.MemRW = MEM_READ;
+            wb_ctrl.MemtoReg = MEMTOREG_PC; // PC + imm
         end
         endcase
     end
